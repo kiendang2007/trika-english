@@ -10,7 +10,7 @@ changes. The content lives in `content/materials/`, one JSON file per material.
 
 ## 1. The product
 
-**Trika English** (formerly CommBat English) teaches one path through English grammar, in fifteen stages and sixteen
+**Trika English** teaches one path through English grammar, in eleven stages and sixteen
 materials, and will not let a learner skip a stage.
 
 The claim the whole product rests on: **the auxiliary verb is the root**. Negation, yes/no
@@ -31,7 +31,7 @@ not a public launch. Individual learners come after that works, English teachers
 
 ## 2. Scope
 
-**In:** the placement screen, the sixteen material pages grouped into fifteen stages, gating,
+**In:** the placement screen, the sixteen material pages grouped into eleven stages, gating,
 questions with the correction loop, progress that survives a refresh, logging to a Google Sheet.
 
 **Out, and the code should contain no trace of these:** a diagnostic test, scoring, a CEFR
@@ -41,7 +41,7 @@ listening, speaking, a teacher dashboard, payment, marketing pages.
 
 The diagnostic was cut on 16 September. The **route** survives; the **test** does not.
 
-## 3. The fifteen stages
+## 3. The eleven stages
 
 Sequence set by the teacher on 16 September, revised 18 September. Generated from `nodes.json`
 and validated by `build_nodes.py`, which checks that no node is taught before something it
@@ -64,13 +64,13 @@ is one move from the auxiliary.**
 | 8 | 9 | `Y7` | Phủ định | `not` sits immediately after the auxiliary |
 | 9 | 10 | `C4.2` | Câu hỏi Yes/No | Move the auxiliary to the front, and answer with it |
 | 10 | 11 | `C4.3` | Câu hỏi Wh- | The same move, with a question word in front |
-| 11 | 12 | `Y1` `M1.4` `M1.3` | Thì, V-0, V-1, V-2 | Tense, taught with the two forms it needs |
-| 12 | 13 | `Y2` `M1.5` `M1.6` | Thể, V-3, V-ing | Aspect, taught with the two forms it needs |
-| 13 | 14 | `Y3` | Dạng bị động | Add a form of `be`, main verb becomes V-3 |
-| 14 | 15 | `Y13` | Tổng hợp các thì | The 12 active and 12 passive forms, and the five in the letter T |
-| 15 | 16 | `W2.5` | Động từ bất quy tắc | Irregulars as the exception to stage 11 |
+| 11 | 12, 13, 14, 15, 16 | `Y1` `M1.4` `M1.3` `Y2` `M1.5` `M1.6` `Y3` `Y13` `W2.5` | Thì, thể, dạng bị động, tổng hợp các thì, động từ bất quy tắc | Tense, aspect, passive, the whole grid, and irregulars, taught together as one stage |
 
-34 nodes in 15 stages, 16 materials.
+Tense, aspect, passive, the tense summary, and irregular verbs were five separate stages (11 to
+15) until 28 September, when the teacher merged them into one stage 11, taught across five
+materials. `build_nodes.py`'s `STAGES` list reflects this as a single entry combining nine nodes.
+
+33 nodes in 11 stages, 16 materials.
 purpose would make no sense, which is why tense arrives with `-ed` and aspect with `V-3` and
 `-ing`.
 
@@ -113,8 +113,8 @@ and validated by `build_nodes.py`, which is the single source of truth. Never ha
 
 Two fields drive v1:
 
-- `in_v1` is true for the 34 nodes in the fifteen stages.
-- `stage` is 1 to 15 for those nodes and null everywhere else. Several nodes may share a stage.
+- `in_v1` is true for the 33 nodes in the eleven stages.
+- `stage` is 1 to 11 for those nodes and null everywhere else. Several nodes may share a stage.
 - `chain_order` mirrors `stage` and is kept only for compatibility.
 
 Three nodes are deliberately excluded from v1 even though their parent is in it: `W1.5f` relative
@@ -147,10 +147,10 @@ Carried on items, used in correction cards to name the Vietnamese-specific cause
 One screen, shown once, before any lesson.
 
 **Teacher mode.** The owner picks a starting stage for a named student from a dropdown of the
-fifteen. This is the path used for the six internal students, and it is honest: in v1 the teacher
+eleven. This is the path used for the six internal students, and it is honest: in v1 the teacher
 is the placement.
 
-**Self mode.** The learner is shown the fifteen stages as plain statements and ticks the ones
+**Self mode.** The learner is shown the eleven stages as plain statements and ticks the ones
 they are sure they already know. The starting stage is the first unticked one. No scoring, no
 diagnosis text, no result screen.
 
@@ -162,7 +162,7 @@ everything else follows from it.
 ```
 gating runs on STAGES, not on single nodes
 
-for each stage 1..15:
+for each stage 1..11:
     if stage  <  learner.current_stage   -> done, openable, marked complete
     if stage ==  learner.current_stage   -> current, openable
     if stage  >  learner.current_stage   -> locked
@@ -177,7 +177,8 @@ A locked stage is clickable and shows why it is locked, naming the stage that co
 
 ## 8. Material page
 
-A stage holds one or more materials. Stage 1 holds two, every other stage holds one. A material is
+A stage holds one or more materials. Stage 1 holds two, stage 11 holds five, every other stage
+holds one. A material is
 one page, rendered top to bottom from the `blocks` array in its JSON file, in exactly that order:
 
 - `text`: `body_vi` as a paragraph, then `list` as bullets if present.
@@ -201,8 +202,7 @@ An item is `mcq` or `short`, both auto-graded.
 **`short`** normalisation before comparing, in this order: trim, lowercase, collapse runs of
 whitespace to one space, strip a trailing full stop. Nothing else. No fuzzy matching.
 
-On a wrong answer, reveal the steps in place, directly under the question, one after another
-(each fades up 160ms after the one before) and all of them stay visible:
+On a wrong answer, show the steps in order, one screen at a time:
 
 1. **Sai**. The answer was wrong.
 2. **Nhận thức cái sai**. The text of the option the learner chose, quoted verbatim.
@@ -211,7 +211,7 @@ On a wrong answer, reveal the steps in place, directly under the question, one a
 5. **Phòng tránh cái sai**. The item's `fallback_vi`. The teacher removed every fallback on
    21 September, so this step is skipped for every item in v1 and the loop ends at step 4.
 
-After the loop, a **Thử lại** button lets the learner answer the same item again. A correct answer shows a short
+After the loop, the learner answers the same item again. A correct answer shows a short
 confirmation and nothing else.
 
 ## 10. Correction cards
@@ -278,13 +278,13 @@ Invariants: exactly one defensible answer per item; every `mcq` wrong option has
 
 All content is JSON in the repository. Nobody needs a database to change a question.
 
-- **`content/nodes.json`**: generated by `build_nodes.py`. Never hand-edit.
+- **`content/nodes.json`**: generated by `build_nodes.py`, which lives at the repository root
+  alongside `check.py` (validates the content, run after every regeneration). Never hand-edit
+  `nodes.json`; edit `STAGES` in `build_nodes.py` and rerun it.
 - **`content/materials/NN-slug.json`**: one file per material, sixteen in all. The site imports every
   file and orders them by `material_id`. Each file carries `material_id`, `title_vi`, `stage`,
   `nodes`, `video_url` and the ordered `blocks`. The block and item formats are in
   `material-format.md`. Items live inside the blocks; there is no separate items file.
-- `render_material.py` turns a material JSON into readable markdown for humans. It is not part of
-  the site.
 
 ## 13. Stack
 
@@ -295,7 +295,9 @@ All content is JSON in the repository. Nobody needs a database to change a quest
   write in try/catch and render correctly when it comes back empty.
 - Logging: one `POST` to a Google Apps Script web app appending a row to a Google Sheet. No keys
   in the client. A failed log never breaks the lesson.
-- GitHub `kiendang2007/commbat-english`, Vercel deploying from `main` on every push.
+- GitHub `kiendang2007/commbat-english`, Vercel deploying from `main` on every push. The repo
+  name and Vercel address keep the old product name on purpose: learners never see them, and
+  changing either after real usage started would break saved progress. See `DECISIONS.md`, D21.
 
 Must work on a 5 inch phone over mobile data. The build timestamp stays printed on screen until
 submission.
