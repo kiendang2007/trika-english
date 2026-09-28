@@ -134,7 +134,6 @@ export default function App() {
     })
   }
 
-  // A new object on every tap, so repeating the same message still scrolls it into view.
   function showNotice(text) {
     setLockMessage({ text })
   }
@@ -214,7 +213,6 @@ export default function App() {
           onBack={backToList}
         />
       )}
-      <p className="stamp">Bản build lúc {formatBuildTime(BUILD_TIME)}</p>
     </div>
   )
 }

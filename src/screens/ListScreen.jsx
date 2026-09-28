@@ -2,6 +2,15 @@ import { isMaterialComplete, isStageComplete } from '../progress.js'
 import Notice from '../components/Notice.jsx'
 import { CheckStroke, LockIcon } from '../components/Icons.jsx'
 
+function LockedInlineIcon() {
+  return (
+    <span className="lock-icon lock-icon-inline" aria-hidden="true">
+      <span className="shackle" />
+      <span className="body" />
+    </span>
+  )
+}
+
 function statusFor(stage, currentStage) {
   if (stage < currentStage) return 'done'
   if (stage === currentStage) return 'current'
@@ -47,10 +56,11 @@ function StageCard({ stage, status, materials, correct, onOpenMaterial, practice
                 <button
                   type="button"
                   className={`material-link${practiceUnlocked ? '' : ' locked-item'}`}
+                  aria-disabled={!practiceUnlocked}
                   onClick={() => onOpenPractice(p)}
                 >
+                  {!practiceUnlocked && <LockedInlineIcon />}
                   {p.title_vi}
-                  {!practiceUnlocked ? ' (chưa mở)' : ''}
                 </button>
               </li>
             ))}
