@@ -35,7 +35,6 @@ a time. Built for a university course, due 5 October 2026.
   Keys are prefixed `trika:` (renamed from `commbat:` on 24 September, before any real learner
   had used the site, so no migration exists or is needed). This prefix is fixed since 25
   September: changing it now would wipe every learner's saved progress.
-- Print the build timestamp in small text at the bottom of every screen.
 - Locked stages stay visible and clickable, and say which stage comes first. Never hide them.
 - Never add scoring, levels, CEFR bands, or anything SPEC section 14 forbids.
 

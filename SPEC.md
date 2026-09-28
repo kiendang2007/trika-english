@@ -299,8 +299,8 @@ All content is JSON in the repository. Nobody needs a database to change a quest
   name and Vercel address keep the old product name on purpose: learners never see them, and
   changing either after real usage started would break saved progress. See `DECISIONS.md`, D21.
 
-Must work on a 5 inch phone over mobile data. The build timestamp stays printed on screen until
-submission.
+Must work on a 5 inch phone over mobile data. The build timestamp that used to print on every
+screen was removed deliberately in PR #11 and stays out.
 
 ## 14. What the build must never do
 
