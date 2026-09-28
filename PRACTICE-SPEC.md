@@ -84,3 +84,32 @@ không ghi cứng trong code.
 giờ giảm và không bao giờ vượt quá giai đoạn cuối. Làm lại luyện tập của một giai đoạn cũ không
 đổi gì. Giai đoạn 11 là giai đoạn cuối: xong phần luyện tập cuối của nó là hết lộ trình, và
 `current_stage` vẫn là 11.
+
+## Màn hình sau câu cuối
+
+Chốt ngày 28/09. Giống nhau ở cả sáu loại luyện tập.
+
+Ba nút xếp thành một cột, cách nhau 12px, căn giữa, rộng bằng nhau, cột rộng tối đa khoảng 20rem:
+
+1. **Làm lại**: làm lại từ câu đầu. Không xoá kết quả đã lưu theo từng câu (mục Gating ở trên),
+   nên phần luyện tập đã xong thì vẫn tính là xong dù người học làm lại bao nhiêu lần.
+2. **Về danh sách**: quay lại màn hình danh sách giai đoạn.
+3. Nút thứ ba, kiểu chính, dẫn sang bước tiếp theo:
+   - Còn phần luyện tập khác của giai đoạn này (xếp theo `practice_id`): "Phần luyện tập tiếp
+     theo", sang phần luyện tập đó.
+   - Đây là phần luyện tập cuối của giai đoạn (theo `practice_id`, bất kể các phần khác của giai
+     đoạn đã xong hay chưa): "Học giai đoạn N" (N lấy từ dữ liệu), sang bài đầu tiên của giai đoạn
+     N.
+   - Đây là phần luyện tập cuối của giai đoạn cuối (11.2): không có nút thứ ba, vì hết lộ trình.
+   - Đích của nút có thể chưa mở, ví dụ giai đoạn N chưa mở vì một phần luyện tập khác của giai
+     đoạn này chưa xong. Nút vẫn hiện, bấm vào vẫn hiện đúng lời từ chối như khi bấm vào một mục
+     đã khoá ở màn hình danh sách. Không ẩn nút và không lờ đi cú bấm.
+
+Nút 1 và nút 2 luôn cùng kích thước: cùng chiều rộng, cùng chiều cao tối thiểu (ít nhất 48px, đủ
+để bấm bằng ngón tay), cùng khoảng đệm, cỡ chữ và bo góc, lấy chung từ một nơi trong CSS. Nút thứ
+ba cùng kích thước và cùng khoảng cách với hai nút kia, chỉ khác màu (kiểu nút chính).
+
+Hoàn thành câu cuối vẫn chạy đúng logic mở khoá và thông báo ở mục Gating. Thông báo đó không che
+ba nút.
+
+Không có điểm số, không đếm số câu đúng trên màn hình này.

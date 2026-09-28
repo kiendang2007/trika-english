@@ -15,6 +15,7 @@ import {
   isPracticeComplete,
   isStagePracticeComplete,
   practiceItemKey,
+  practiceSetsForStage,
   stageHasPractice,
 } from './progress.js'
 import { STAGE_COUNT } from './stages.js'
@@ -60,6 +61,24 @@ export function nextStepFor(material) {
     .filter((m) => m.stage > material.stage)
     .sort((a, b) => a.material_id - b.material_id)
   return later[0] ? { kind: 'material', material: later[0] } : null
+}
+
+// What the third button at the end of a practice does. The next practice of the same stage, by
+// practice_id order, if there is one; otherwise the first material of the next stage, from the
+// last practice of a stage (last by that same order, whether or not the other practices of the
+// stage are actually finished yet). The last practice of the last stage has nothing after it, so
+// the button does not render there.
+export function nextPracticeStepFor(practiceSet) {
+  const sameStage = practiceSetsForStage(practiceSet.stage)
+  const idx = sameStage.findIndex((p) => p.practice_id === practiceSet.practice_id)
+  if (idx < sameStage.length - 1) return { kind: 'practice', practice: sameStage[idx + 1] }
+
+  if (practiceSet.stage >= STAGE_COUNT) return null
+
+  const nextStageMaterials = materials
+    .filter((m) => m.stage === practiceSet.stage + 1)
+    .sort((a, b) => a.material_id - b.material_id)
+  return nextStageMaterials[0] ? { kind: 'material', material: nextStageMaterials[0] } : null
 }
 
 export default function App() {
@@ -321,6 +340,11 @@ export default function App() {
           onBack={backToList}
           onItemDone={handlePracticeItemDone}
           finishedNote={practiceNoteFor(currentPracticeSet)}
+          nextStep={nextPracticeStepFor(currentPracticeSet)}
+          onOpenPractice={openPractice}
+          onOpenMaterial={openMaterial}
+          notice={lockMessage}
+          onDismissNotice={() => setLockMessage(null)}
         />
       )}
     </div>

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import StepDots from './components/StepDots.jsx'
+import Notice from './components/Notice.jsx'
 import SelectWordsBlock from './blocks/practice/SelectWordsBlock.jsx'
 import SortTwoBlock from './blocks/practice/SortTwoBlock.jsx'
 import McqBlock from './blocks/practice/McqBlock.jsx'
 import BlankBlock from './blocks/practice/BlankBlock.jsx'
 import ReorderBlock from './blocks/practice/ReorderBlock.jsx'
 import TwoStepBlock from './blocks/practice/TwoStepBlock.jsx'
+import { NEXT_PRACTICE_LABEL, nextStageLabel } from './messages.js'
 import { log } from './log.js'
 
 const BLOCKS = {
@@ -17,7 +19,17 @@ const BLOCKS = {
   two_step: TwoStepBlock,
 }
 
-export default function PracticePage({ practiceSet, onBack, onItemDone, finishedNote }) {
+export default function PracticePage({
+  practiceSet,
+  onBack,
+  onItemDone,
+  finishedNote,
+  nextStep,
+  onOpenPractice,
+  onOpenMaterial,
+  notice,
+  onDismissNotice,
+}) {
   const [index, setIndex] = useState(0)
   const items = practiceSet.items
   const total = items.length
@@ -47,6 +59,16 @@ export default function PracticePage({ practiceSet, onBack, onItemDone, finished
 
   function restart() {
     setIndex(0)
+  }
+
+  // The button that moves the learner on: to the next practice of this stage, or, from the last
+  // one, to the next stage's first material. Goes through the same handlers the list screen and
+  // the material page use, so a target that is not actually open yet shows the same locked
+  // refusal instead of the click being ignored.
+  function goToNextStep() {
+    if (!nextStep) return
+    if (nextStep.kind === 'practice') onOpenPractice?.(nextStep.practice)
+    else onOpenMaterial?.(nextStep.material)
   }
 
   const Block = !finished ? BLOCKS[practiceSet.type] : null
@@ -79,16 +101,30 @@ export default function PracticePage({ practiceSet, onBack, onItemDone, finished
         <Block key={item.id} item={item} onNext={goNext} onAnswer={handleAnswer} />
       )}
 
+      <Notice notice={notice} onDismiss={onDismissNotice} />
+
       {finished && (
         <>
           <p className="all-done">{finishedNote}</p>
-          <div className="btn-row">
+          {/* One column, one shared size for all three buttons (see .practice-end in
+              styles.css), so Làm lại and Về danh sách can never drift apart again. The third
+              button is missing only past 11.2, the last practice of the whole route; everywhere
+              else it renders even when its target is still locked, and the click shows the same
+              refusal as tapping a locked stage or practice from the list. */}
+          <div className="practice-end">
             <button type="button" className="btn-retry" onClick={restart}>
               Làm lại
             </button>
             <button type="button" className="btn-primary" onClick={onBack}>
               Về danh sách
             </button>
+            {nextStep && (
+              <button type="button" className="btn-primary" onClick={goToNextStep}>
+                {nextStep.kind === 'practice'
+                  ? NEXT_PRACTICE_LABEL
+                  : nextStageLabel(nextStep.material.stage)}
+              </button>
+            )}
           </div>
         </>
       )}

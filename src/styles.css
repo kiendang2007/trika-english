@@ -1173,6 +1173,37 @@ button.option:hover {
   font-weight: 800;
 }
 
+/* The three buttons on the screen after the last item: Làm lại, Về danh sách, and (everywhere
+   but the very last practice of the route) the button that moves on. One column instead of the
+   two-in-a-row that used to overlap, capped at a comfortable width and centered so it does not
+   stretch edge to edge on a wide screen. */
+.practice-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 20rem;
+  margin: 0 auto;
+  padding: 16px 0;
+}
+
+/* Làm lại and Về danh sách carry their own colour classes (btn-retry, btn-primary) for looks
+   only; every dimension for a button on this screen lives here, in one place, so the two cannot
+   drift apart again. min-height, not height, so a longer label on the third button ("Phần luyện
+   tập tiếp theo", "Học giai đoạn 11") is free to wrap to a second line without shrinking below
+   the touch target, while Làm lại and Về danh sách, which never wrap, stay at that same height. */
+.practice-end .btn-retry,
+.practice-end .btn-primary {
+  width: 100%;
+  min-height: 52px;
+  padding: 16px 20px;
+  font-size: 17px;
+  line-height: 1.35;
+  border-radius: var(--r-control);
+  text-align: center;
+}
+
 /* ---------- Practice: chips ---------- */
 
 .chip-pool {

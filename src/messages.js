@@ -41,3 +41,11 @@ export function materialsDoneMessage(stage) {
       : `để mở giai đoạn ${stage + 1}.`
   return `Đã xong câu hỏi trong bài. Làm hết các phần luyện tập của giai đoạn ${stage} ${tail}`
 }
+
+// The button at the end of a practice that moves the learner on: to the next practice of the
+// same stage, or, from the last practice of a stage, to the next stage's first material.
+export const NEXT_PRACTICE_LABEL = 'Phần luyện tập tiếp theo'
+
+export function nextStageLabel(stage) {
+  return `Học giai đoạn ${stage}`
+}
