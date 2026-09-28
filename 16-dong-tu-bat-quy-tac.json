@@ -1,0 +1,191 @@
+{
+  "material_id": 16,
+  "slug": "dong-tu-bat-quy-tac",
+  "title_vi": "Các động từ bất quy tắc",
+  "stage": 11,
+  "nodes": [
+    "W2.5"
+  ],
+  "video_url": null,
+  "blocks": [
+    {
+      "type": "text",
+      "body_vi": "Động từ có quy tắc là động từ tạo V-2 và V-3 bằng cách thêm -ed, nên hai dạng đó viết giống hệt nhau. Động từ bất quy tắc thì không theo cách đó:",
+      "node": "W2.5",
+      "list": [
+        "có quy tắc: work  worked  worked. V-2 và V-3 giống nhau.",
+        "bất quy tắc: go  went  gone. V-2 và V-3 khác nhau.",
+        "bất quy tắc: read  read  read. Cả ba dạng viết giống nhau, nhưng V-2 và V-3 đọc là /red/, giống màu đỏ.",
+        "Lưu ý: có rất nhiều động từ bất quy tắc. Không thể và cũng không nên nhớ hết chúng."
+      ]
+    },
+    {
+      "type": "item",
+      "item": {
+        "id": "W2.5-01",
+        "node": "W2.5",
+        "l1_tag": null,
+        "type": "mcq",
+        "prompt_vi": "Động từ nào dưới đây là động từ có quy tắc?",
+        "options": [
+          {
+            "key": "A",
+            "text": "swim, swam, swum",
+            "diagnosis_vi": "V-2 là \"swam\" còn V-3 là \"swum\", hai dạng khác nhau và cũng không có đuôi -ed, nên đây là động từ bất quy tắc."
+          },
+          {
+            "key": "B",
+            "text": "clean, cleaned, cleaned",
+            "diagnosis_vi": null
+          },
+          {
+            "key": "C",
+            "text": "sing, sang, sung",
+            "diagnosis_vi": "V-2 là \"sang\" còn V-3 là \"sung\", hai dạng khác nhau, nên đây là động từ bất quy tắc."
+          },
+          {
+            "key": "D",
+            "text": "give, gave, given",
+            "diagnosis_vi": "V-2 là \"gave\" còn V-3 là \"given\", hai dạng khác nhau, nên đây là động từ bất quy tắc."
+          }
+        ],
+        "answer": "B",
+        "rule_vi": "Phép thử đơn giản nhất: nhìn V-2 và V-3. Giống nhau và có đuôi -ed thì là động từ có quy tắc. Khác nhau thì là bất quy tắc.",
+        "fallback_vi": null
+      }
+    },
+    {
+      "type": "section",
+      "node": "W2.5",
+      "heading_vi": "Ba kiểu động từ bất quy tắc",
+      "body_vi": "Động từ bất quy tắc chia thành ba kiểu, theo mức giống nhau của ba dạng. Bảng này chỉ là một ít trong số rất nhiều từ.",
+      "table": {
+        "columns_vi": [
+          "Kiểu",
+          "V-0",
+          "V-2",
+          "V-3"
+        ],
+        "rows": [
+          [
+            "cả ba giống nhau",
+            "cut, put, hit, read",
+            "cut, put, hit, read",
+            "cut, put, hit, read"
+          ],
+          [
+            "V-2 và V-3 giống nhau",
+            "buy, teach, find, sit",
+            "bought, taught, found, sat",
+            "bought, taught, found, sat"
+          ],
+          [
+            "cả ba khác nhau",
+            "go, write, eat, drink",
+            "went, wrote, ate, drank",
+            "gone, written, eaten, drunk"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "item",
+      "item": {
+        "id": "W2.5-02",
+        "node": "W2.5",
+        "l1_tag": null,
+        "type": "mcq",
+        "prompt_vi": "Chọn câu đúng cho \"Hôm qua tôi đã hát một bài hát.\":",
+        "options": [
+          {
+            "key": "A",
+            "text": "I singed a song yesterday.",
+            "diagnosis_vi": "Áp dụng quy tắc thêm -ed cho một động từ bất quy tắc. \"sing\" không dùng quy tắc đó, V-2 của nó là \"sang\"."
+          },
+          {
+            "key": "B",
+            "text": "I sang a song yesterday.",
+            "diagnosis_vi": null
+          },
+          {
+            "key": "C",
+            "text": "I sung a song yesterday.",
+            "diagnosis_vi": "\"sung\" là V-3, dùng cho thể hoàn thành cùng với have. Quá khứ đơn cần V-2, tức là \"sang\"."
+          },
+          {
+            "key": "D",
+            "text": "I did sang a song yesterday.",
+            "diagnosis_vi": "Thêm \"did\" vào câu khẳng định và chia quá khứ hai lần. Ở quá khứ đơn, câu khẳng định không cần trợ động từ."
+          }
+        ],
+        "answer": "B",
+        "rule_vi": "Ở quá khứ đơn, câu khẳng định dùng V-2. Với động từ bất quy tắc, V-2 không phải là V-0 cộng -ed mà là một từ riêng phải nhớ.",
+        "fallback_vi": null
+      }
+    },
+    {
+      "type": "item",
+      "item": {
+        "id": "W2.5-03",
+        "node": "W2.5",
+        "l1_tag": null,
+        "type": "mcq",
+        "prompt_vi": "Chọn câu đúng cho \"Tôi đã hát bài hát đó rồi.\":",
+        "options": [
+          {
+            "key": "A",
+            "text": "I have sang that song.",
+            "diagnosis_vi": "\"sang\" là V-2. Thể hoàn thành cần V-3, và V-3 của \"sing\" là \"sung\". Đây chính là chỗ động từ bất quy tắc gây khó: có quy tắc thì V-2 và V-3 giống nhau nên không phải chọn, còn bất quy tắc thì phải chọn đúng."
+          },
+          {
+            "key": "B",
+            "text": "I have sung that song.",
+            "diagnosis_vi": null
+          },
+          {
+            "key": "C",
+            "text": "I have singed that song.",
+            "diagnosis_vi": "Áp dụng quy tắc thêm -ed cho một động từ bất quy tắc."
+          },
+          {
+            "key": "D",
+            "text": "I have sing that song.",
+            "diagnosis_vi": "Để động từ ở dạng V-0. Sau have luôn là V-3."
+          }
+        ],
+        "answer": "B",
+        "rule_vi": "Sau have luôn là V-3. Với động từ có quy tắc, V-3 giống V-2 nên không cần phân biệt. Với động từ bất quy tắc, V-2 và V-3 thường là hai từ khác nhau, và chọn nhầm là lỗi hay gặp nhất ở phần này.",
+        "fallback_vi": null
+      }
+    },
+    {
+      "type": "funfact",
+      "node": "W2.5",
+      "heading_vi": "Vì sao lại có động từ bất quy tắc?",
+      "body_vi": "Những động từ bất quy tắc phần lớn là các từ cổ nhất và hay dùng nhất trong tiếng Anh: be, go, have, do, say, make, take. Chúng bất quy tắc chính vì hay dùng: một từ được nói ra hàng chục lần mỗi ngày thì người ta nhớ nguyên hình của nó, không cần suy ra bằng quy tắc, nên nó không bị kéo về theo quy tắc chung. Những từ ít gặp hơn thì không ai nhớ nổi hình riêng, nên chúng dần dần chuyển sang thêm -ed. Nghĩa là danh sách bất quy tắc đang ngắn dần theo thời gian, và phần còn lại là phần gặp nhiều nhất, tức là phần đằng nào cũng sẽ thuộc."
+    }
+  ],
+  "_internal": {
+    "note": "Everything under _internal is for the team only. The site never renders it.",
+    "taught_before": [
+      "Material #12: V-0, V-1, V-2, và quy tắc thêm -ed.",
+      "Material #13: V-3, V-ing, và hai cặp be với V-ing, have với V-3.",
+      "Material #14: dạng bị động, cũng cần V-3."
+    ],
+    "not_yet_taught_so_not_used": [],
+    "sources": [
+      "Ngữ pháp Tiếng Anh 1.docx của Kiên: \"Những động từ có quy tắc: V-2 và V-3 giống nhau. Những động từ không có quy tắc: V-2 và V-3 khác nhau.\" Và ở mục danh từ: \"Có rất nhiều danh từ số nhiều bất quy tắc. Chúng ta không thể và không nên nhớ hết chúng.\" Bài này áp dụng đúng câu đó cho động từ.",
+      "Fun fact về lý do tồn tại của động từ bất quy tắc là phần em viết. Nhận định rằng từ càng hay dùng càng giữ được hình bất quy tắc là quan sát phổ biến trong ngôn ngữ học lịch sử, nhưng em không trích dẫn con số hay nghiên cứu cụ thể nào, nên đừng đưa số liệu vào bài."
+    ],
+    "decisions": [
+      "Hai item cuối để fallback_vi là null, theo đúng chỉ đạo của Kiên ở material #2: bảng không liệt kê hết động từ bất quy tắc, nên một câu gợi ý bảo tra bảng sẽ là lời hứa sai. Website bỏ trống bước 5 của vòng năm bước ở hai item này, theo SPEC mục 9.",
+      "Bài này đặt ở cuối vì nó là ngoại lệ của quy tắc -ed đã dạy ở material #12, không phải là một chương riêng. Đây là chỗ sửa cạnh phụ thuộc ngày 16/09: trước đây M1.4 phụ thuộc W2.5, tức là dạy ngoại lệ trước quy tắc.",
+      "Chia ba kiểu theo mức giống nhau của ba dạng, thay vì liệt kê một bảng dài. Người học nhận ra kiểu thì đoán được nửa còn lại.",
+      "Item W2.5-03 nhắm thẳng vào lỗi \"have went\", vì đây là lỗi hay gặp nhất và nó chỉ xuất hiện ở động từ bất quy tắc.",
+      "Áp dụng các sở thích Kiên nêu ngày 19/09 cho bài này: bỏ chữ \"Khái niệm\", bỏ mọi lời hứa \"học ở bài sau\", dùng \"ngôi thứ ba\", ghi tên đầy đủ của từng dạng động từ, và nêu trường hợp riêng trước trường hợp chung.",
+      "Ngày 20/09 theo Kiên: ghi rõ V-2 và V-3 của \"read\" đọc là /red/, giống màu đỏ. Ba câu hỏi đổi sang clean, swim, sing và give, đều là động từ không có trong bảng ba kiểu ở trên, nên người học phải tự suy ra chứ không tra bảng được.",
+      "Ngày 21/09: trang tra cứu động từ bất quy tắc để sang V2. Cách đọc đuôi -ed thuộc phần phát âm, thêm sau."
+    ],
+    "open_questions": []
+  }
+}
