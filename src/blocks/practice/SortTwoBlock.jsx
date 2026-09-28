@@ -2,8 +2,8 @@ import { useState } from 'react'
 import PracticeCard from './PracticeCard.jsx'
 import { CheckCircle, CrossCircle } from '../../components/Icons.jsx'
 
-// Xếp vào hai nhóm: tap a chip in the pool to select it, then tap a column to place it there.
-// A placed chip is tapped directly to send it back to the pool, same convention as OrderChip.
+// Xếp vào hai nhóm: tap a chip in the pool then tap a column to place it, or drag a chip
+// directly onto a column. A placed chip is tapped or dragged back to the pool the same way.
 export default function SortTwoBlock({ item, onNext, onAnswer }) {
   const chips = item.chips.map((c, i) => ({ id: i, word: c.word, group: c.group }))
   const [placement, setPlacement] = useState({}) // id -> 'left' | 'right'
@@ -20,10 +20,14 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
     setSelectedId(id === selectedId ? null : id)
   }
 
-  function placeInColumn(column) {
-    if (checked || selectedId === null) return
-    setPlacement({ ...placement, [selectedId]: column })
+  function placeChip(id, column) {
+    if (checked || id === null || id === undefined) return
+    setPlacement({ ...placement, [id]: column })
     setSelectedId(null)
+  }
+
+  function placeInColumn(column) {
+    placeChip(selectedId, column)
   }
 
   function returnToPool(id) {
@@ -31,6 +35,31 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
     const next = { ...placement }
     delete next[id]
     setPlacement(next)
+  }
+
+  function dragStart(e, id) {
+    if (checked) return
+    e.dataTransfer.setData('text/plain', String(id))
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  function allowDrop(e) {
+    if (checked) return
+    e.preventDefault()
+  }
+
+  function dropOnColumn(e, column) {
+    if (checked) return
+    e.preventDefault()
+    const id = Number(e.dataTransfer.getData('text/plain'))
+    placeChip(id, column)
+  }
+
+  function dropOnPool(e) {
+    if (checked) return
+    e.preventDefault()
+    const id = Number(e.dataTransfer.getData('text/plain'))
+    returnToPool(id)
   }
 
   function check() {
@@ -62,6 +91,8 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
           tabIndex={0}
           onClick={() => placeInColumn(group)}
           onKeyDown={(e) => e.key === 'Enter' && placeInColumn(group)}
+          onDragOver={allowDrop}
+          onDrop={(e) => dropOnColumn(e, group)}
         >
           {list.length === 0 && <span className="sort-column-empty">Chưa có từ nào</span>}
           {list.map((c) =>
@@ -74,6 +105,8 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
                 key={c.id}
                 type="button"
                 className={chipClass(c)}
+                draggable
+                onDragStart={(e) => dragStart(e, c.id)}
                 onClick={(e) => {
                   e.stopPropagation()
                   returnToPool(c.id)
@@ -111,7 +144,7 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
       </div>
 
       {!checked && (
-        <div className="chip-pool">
+        <div className="chip-pool" onDragOver={allowDrop} onDrop={dropOnPool}>
           <span className="chip-pool-label">Bể từ · còn {pool.length}</span>
           <div className="chip-pool-row">
             {pool.map((c) => (
@@ -119,6 +152,8 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
                 key={c.id}
                 type="button"
                 className={`order-chip${selectedId === c.id ? ' selected' : ''}`}
+                draggable
+                onDragStart={(e) => dragStart(e, c.id)}
                 onClick={() => pickFromPool(c.id)}
               >
                 {c.word}
