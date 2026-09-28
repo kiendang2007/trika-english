@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PracticeCard from './PracticeCard.jsx'
 import PracticeFeedback from './PracticeFeedback.jsx'
 import { CheckCircle } from '../../components/Icons.jsx'
-import { buildSentence, classifyChip } from '../../practiceUtils.js'
+import { buildSentence } from '../../practiceUtils.js'
 
 const SLOT_LABEL = { tense: 'thì', aspect: 'thể', voice: 'dạng' }
 const SLOT_KEYS = ['tense', 'aspect', 'voice']
@@ -90,24 +90,19 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
 
   const step1AnswerText = SLOT_KEYS.map((k) => step1.answer[k]).join(' + ')
 
-  // Step 2
+  // Step 2. Each item has exactly two decoy chips (one spare auxiliary, one spare main-verb
+  // form); Kiểm tra locks only when both of those specific chips are on the answer line, not
+  // whenever two auxiliary-looking words appear (a correct sentence like "will have finished"
+  // legitimately uses two auxiliary words).
   const chips2 = step2.chips.map((text, i) => ({ id: i, text }))
   const placed2 = placedIds.map((id) => chips2.find((c) => c.id === id))
   const pool2 = chips2.filter((c) => !placedIds.includes(c.id))
 
-  function categoryOf(chip) {
-    return classifyChip(chip.text, step2.decoys)
-  }
+  const decoyIds = step2.decoys.map((text) => chips2.find((c) => c.text === text).id)
+  const bothDecoysPlaced = decoyIds.every((id) => placedIds.includes(id))
+  const duplicateWords = bothDecoysPlaced ? step2.decoys : []
 
-  const placedCategories = placed2.map(categoryOf).filter(Boolean)
-  const duplicateCategory = ['aux', 'verbform'].find(
-    (cat) => placedCategories.filter((c) => c === cat).length > 1
-  )
-  const duplicateWords = duplicateCategory
-    ? placed2.filter((c) => categoryOf(c) === duplicateCategory).map((c) => c.text)
-    : []
-
-  const step2Ready = pool2.length === step2.decoys.length && !duplicateCategory
+  const step2Ready = pool2.length === step2.decoys.length && !bothDecoysPlaced
 
   function place2(id) {
     if (step2Status !== 'building') return
@@ -135,7 +130,7 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
 
   function chip2Class(chip) {
     if (step2Status === 'correct' || step2Status === 'wrong') return `order-chip ${step2Status}`
-    return duplicateCategory && categoryOf(chip) === duplicateCategory ? 'order-chip suspect' : 'order-chip placed'
+    return bothDecoysPlaced && decoyIds.includes(chip.id) ? 'order-chip suspect' : 'order-chip placed'
   }
 
   if (step1Status !== 'correct') {
@@ -233,7 +228,7 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
           placed2.map((c) => (
             <button key={c.id} type="button" className={chip2Class(c)} onClick={() => unplace2(c.id)}>
               {c.text}
-              <span className={`chip-return${duplicateCategory && categoryOf(c) === duplicateCategory ? ' suspect' : ''}`}>
+              <span className={`chip-return${bothDecoysPlaced && decoyIds.includes(c.id) ? ' suspect' : ''}`}>
                 ↩
               </span>
             </button>
@@ -247,13 +242,12 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
         )}
       </div>
 
-      {duplicateCategory && step2Status === 'building' && (
+      {bothDecoysPlaced && step2Status === 'building' && (
         <div className="warning-callout">
           <span className="warning-glyph" aria-hidden="true">!</span>
           <span>
-            Trong dòng đang có hai {duplicateCategory === 'aux' ? 'trợ động từ' : 'dạng của động từ chính'}:{' '}
-            <strong>{duplicateWords[0]}</strong> và <strong>{duplicateWords[1]}</strong>. Bấm một trong hai để trả về
-            bể.
+            Trong dòng đang có cả hai từ thừa: <strong>{duplicateWords[0]}</strong> và{' '}
+            <strong>{duplicateWords[1]}</strong>. Bấm một trong hai để trả về bể.
           </span>
         </div>
       )}
@@ -279,7 +273,7 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
 
       {step2Status === 'building' && (
         <p className="hint">
-          {duplicateCategory
+          {bothDecoysPlaced
             ? 'Nút Kiểm tra vẫn đóng cho tới khi chỉ còn một trợ động từ và một dạng của động từ chính.'
             : 'Bấm hết các từ đúng vào dòng để mở nút Kiểm tra. Hai từ thừa sẽ còn lại trong bể.'}
         </p>
