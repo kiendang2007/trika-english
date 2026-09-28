@@ -1897,8 +1897,8 @@
     "old_id": null,
     "note": "Taught last, as the systematisation of exceptions to a rule the learner already has.",
     "in_v1": true,
-    "stage": 15,
-    "chain_order": 15
+    "stage": 11,
+    "chain_order": 11
   },
   {
     "id": "W2.6",
@@ -2649,8 +2649,8 @@
     "old_id": null,
     "note": null,
     "in_v1": true,
-    "stage": 12,
-    "chain_order": 12
+    "stage": 11,
+    "chain_order": 11
   },
   {
     "id": "M1.6",
@@ -2671,8 +2671,8 @@
     "old_id": null,
     "note": null,
     "in_v1": true,
-    "stage": 12,
-    "chain_order": 12
+    "stage": 11,
+    "chain_order": 11
   },
   {
     "id": "M1.7",
@@ -3198,8 +3198,8 @@
     "old_id": "W2.2",
     "note": "Tense and aspect are two independent systems. That is why the grid is three by four, not a list of twelve. Split from the old W2.2 so a learner weak on aspect but fine on tense does not read as one undifferentiated red.",
     "in_v1": true,
-    "stage": 12,
-    "chain_order": 12
+    "stage": 11,
+    "chain_order": 11
   },
   {
     "id": "Y3",
@@ -3221,8 +3221,8 @@
     "old_id": "W2.3",
     "note": null,
     "in_v1": true,
-    "stage": 13,
-    "chain_order": 13
+    "stage": 11,
+    "chain_order": 11
   },
   {
     "id": "Y4",
@@ -3458,8 +3458,8 @@
     "old_id": null,
     "note": "Synthesis node, added 21 Sep at the teacher's request: the 12 active and 12 passive forms as one grid, and the five everyday forms that make a letter T.",
     "in_v1": true,
-    "stage": 14,
-    "chain_order": 14
+    "stage": 11,
+    "chain_order": 11
   },
   {
     "id": "K",
