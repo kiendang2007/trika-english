@@ -1,4 +1,4 @@
-import { isMaterialComplete } from '../progress.js'
+import { isMaterialComplete, isStageComplete } from '../progress.js'
 import Notice from '../components/Notice.jsx'
 import { CheckStroke, LockIcon } from '../components/Icons.jsx'
 
@@ -20,7 +20,8 @@ function StageMarker({ stage, status }) {
   )
 }
 
-function StageCard({ stage, status, materials, correct, onOpenMaterial }) {
+function StageCard({ stage, status, materials, correct, onOpenMaterial, practiceSets, onOpenPractice }) {
+  const practiceUnlocked = isStageComplete(stage, correct)
   return (
     <div className={`stage-card ${status}`}>
       <div className="stage-card-head">
@@ -37,6 +38,25 @@ function StageCard({ stage, status, materials, correct, onOpenMaterial }) {
           </li>
         ))}
       </ul>
+      {practiceSets.length > 0 && (
+        <div className="practice-list">
+          <span className="practice-list-label">Luyện tập</span>
+          <ul className="material-list">
+            {practiceSets.map((p) => (
+              <li key={p.practice_id}>
+                <button
+                  type="button"
+                  className={`material-link${practiceUnlocked ? '' : ' locked-item'}`}
+                  onClick={() => onOpenPractice(p)}
+                >
+                  {p.title_vi}
+                  {!practiceUnlocked ? ' (chưa mở)' : ''}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
@@ -44,7 +64,9 @@ function StageCard({ stage, status, materials, correct, onOpenMaterial }) {
 export default function ListScreen({
   learner,
   materials,
+  practiceSets,
   onOpenMaterial,
+  onOpenPractice,
   onSwitchLearner,
   notice,
   onDismissNotice,
@@ -88,6 +110,8 @@ export default function ListScreen({
                   materials={stageMaterials}
                   correct={learner.correct}
                   onOpenMaterial={onOpenMaterial}
+                  practiceSets={practiceSets.filter((p) => p.stage === stage)}
+                  onOpenPractice={onOpenPractice}
                 />
               </div>
             </li>

@@ -3,9 +3,11 @@ import NameScreen from './screens/NameScreen.jsx'
 import ListScreen from './screens/ListScreen.jsx'
 import TeacherScreen from './screens/TeacherScreen.jsx'
 import MaterialPage from './MaterialPage.jsx'
+import PracticePage from './PracticePage.jsx'
 import { materials } from './content.js'
+import { practiceSets } from './practice.js'
 import { loadLastName, saveLastName, hasProgress, loadProgress, saveProgress } from './learner.js'
-import { advanceStage, isMaterialComplete } from './progress.js'
+import { advanceStage, isMaterialComplete, isStageComplete } from './progress.js'
 import { log, setLogContext } from './log.js'
 
 const BUILD_TIME = __BUILD_TIME__
@@ -35,6 +37,7 @@ export default function App() {
   const [learner, setLearner] = useState(null)
   const [screen, setScreen] = useState('name')
   const [currentMaterialId, setCurrentMaterialId] = useState(null)
+  const [currentPracticeId, setCurrentPracticeId] = useState(null)
   const [lockMessage, setLockMessage] = useState(null)
 
   useEffect(() => {
@@ -154,11 +157,25 @@ export default function App() {
     setScreen('list')
   }
 
+  function openPractice(set) {
+    if (!learner) return
+    if (!isStageComplete(set.stage, learner.correct)) {
+      showNotice(`Phần luyện tập này chưa mở. Hãy học xong Giai đoạn ${set.stage} trước.`)
+      setLogContext(learner.name, learner.current_stage)
+      log('practice_locked_click', { practice: set.practice_id })
+      return
+    }
+    setLockMessage(null)
+    setCurrentPracticeId(set.practice_id)
+    setScreen('practice')
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [screen, currentMaterialId])
+  }, [screen, currentMaterialId, currentPracticeId])
 
   const currentMaterial = materials.find((m) => m.material_id === currentMaterialId)
+  const currentPracticeSet = practiceSets.find((p) => p.practice_id === currentPracticeId)
 
   return (
     <div className="page">
@@ -168,7 +185,9 @@ export default function App() {
         <ListScreen
           learner={learner}
           materials={materials}
+          practiceSets={practiceSets}
           onOpenMaterial={openMaterial}
+          onOpenPractice={openPractice}
           onSwitchLearner={handleSwitchLearner}
           notice={lockMessage}
           onDismissNotice={() => setLockMessage(null)}
@@ -186,6 +205,13 @@ export default function App() {
           onAnswerPick={handleAnswerPick}
           notice={lockMessage}
           onDismissNotice={() => setLockMessage(null)}
+        />
+      )}
+      {screen === 'practice' && learner && currentPracticeSet && (
+        <PracticePage
+          key={currentPracticeSet.practice_id}
+          practiceSet={currentPracticeSet}
+          onBack={backToList}
         />
       )}
       <p className="stamp">Bản build lúc {formatBuildTime(BUILD_TIME)}</p>
