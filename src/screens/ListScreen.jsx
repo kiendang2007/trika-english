@@ -1,5 +1,5 @@
-import { isMaterialComplete, isStageComplete } from '../progress.js'
-import { STAGE_COUNT, FINISHED_STAGE } from '../stages.js'
+import { isEverythingComplete, isMaterialComplete, isStageComplete } from '../progress.js'
+import { STAGE_COUNT } from '../stages.js'
 import Notice from '../components/Notice.jsx'
 import { CheckStroke, LockIcon } from '../components/Icons.jsx'
 
@@ -12,8 +12,10 @@ function LockedInlineIcon() {
   )
 }
 
-function statusFor(stage, currentStage) {
-  if (stage < currentStage) return 'done'
+// The last stage has no stage after it, so a learner who finishes it stays on it. Completion,
+// not a stage number the learner has moved past, is what marks a stage done.
+function statusFor(stage, currentStage, correct) {
+  if (stage < currentStage || isStageComplete(stage, correct)) return 'done'
   if (stage === currentStage) return 'current'
   return 'locked'
 }
@@ -101,12 +103,12 @@ export default function ListScreen({
         </button>
       </div>
       <Notice notice={notice} onDismiss={onDismissNotice} />
-      {learner.current_stage >= FINISHED_STAGE && (
+      {isEverythingComplete(learner.correct) && (
         <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
       )}
       <ol className="stage-trail">
         {stages.map(({ stage, materials: stageMaterials }) => {
-          const status = statusFor(stage, learner.current_stage)
+          const status = statusFor(stage, learner.current_stage, learner.correct)
           const solid = status === 'done'
           return (
             <li key={stage}>

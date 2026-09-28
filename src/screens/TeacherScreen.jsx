@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { STAGE_COUNT } from '../stages.js'
 
-// Stage 11 holds five materials, so commas carry the list and "và" only joins the last one.
+// A stage can hold several materials, so commas carry the list and "và" only joins the last one.
 function stageLabel(stage, materials) {
   const titles = materials
     .filter((m) => m.stage === stage)
@@ -61,6 +61,7 @@ export default function TeacherScreen({ materials }) {
             value={stage}
             onChange={(event) => setStage(Number(event.target.value))}
           >
+            {/* One option per stage the content actually has. See src/stages.js. */}
             {Array.from({ length: STAGE_COUNT }, (_, i) => i + 1).map((s) => (
               <option key={s} value={s}>
                 {stageLabel(s, materials)}

@@ -67,8 +67,9 @@ export default function MaterialPage({
 
       <Notice notice={notice} onDismiss={onDismissNotice} />
 
-      {/* Material 16 is the last one in the last stage, so there is no next step to name. Once
-          every stage is done the finished state takes the button's place. */}
+      {/* The last material of the last stage has nothing after it, so there is no next step to
+          name and no button is rendered. Once every stage is done the finished state takes its
+          place. */}
       {nextMaterial ? (
         <div className="btn-row">
           <button type="button" className="btn-primary" onClick={() => onOpenMaterial(nextMaterial)}>

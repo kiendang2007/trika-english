@@ -7,8 +7,8 @@ import PracticePage from './PracticePage.jsx'
 import { materials } from './content.js'
 import { practiceSets } from './practice.js'
 import { loadLastName, saveLastName, hasProgress, loadProgress, saveProgress } from './learner.js'
-import { advanceStage, isMaterialComplete, isStageComplete } from './progress.js'
-import { STAGE_COUNT, FINISHED_STAGE } from './stages.js'
+import { advanceStage, isEverythingComplete, isMaterialComplete, isStageComplete } from './progress.js'
+import { STAGE_COUNT } from './stages.js'
 import { log, setLogContext } from './log.js'
 
 const BUILD_TIME = __BUILD_TIME__
@@ -21,17 +21,19 @@ function formatBuildTime(iso) {
   }
 }
 
-function nextMaterialFor(material) {
+export function nextMaterialFor(material) {
   const sameStage = materials
     .filter((m) => m.stage === material.stage)
     .sort((a, b) => a.material_id - b.material_id)
   const idx = sameStage.findIndex((m) => m.material_id === material.material_id)
   if (idx < sameStage.length - 1) return sameStage[idx + 1]
 
-  const nextStageMaterials = materials
-    .filter((m) => m.stage === material.stage + 1)
+  // Whatever stage the remaining materials start, rather than "this stage plus one", so the
+  // last material of the last stage finds nothing and the button is not rendered at all.
+  const later = materials
+    .filter((m) => m.stage > material.stage)
     .sort((a, b) => a.material_id - b.material_id)
-  return nextStageMaterials[0] ?? null
+  return later[0] ?? null
 }
 
 export default function App() {
@@ -206,7 +208,7 @@ export default function App() {
           onOpenMaterial={openMaterial}
           correct={learner.correct}
           onAnswerPick={handleAnswerPick}
-          allStagesDone={learner.current_stage >= FINISHED_STAGE}
+          allStagesDone={isEverythingComplete(learner.correct)}
           notice={lockMessage}
           onDismissNotice={() => setLockMessage(null)}
         />
