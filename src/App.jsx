@@ -128,6 +128,10 @@ export default function App() {
     const lastName = loadLastName()
     if (lastName) {
       const progress = loadProgress(lastName)
+      // loadProgress already clamps and advances in memory; write it back so a save made before
+      // the eleven-stage restructure or the practice gating change reads the same way next time
+      // too, without waiting on the learner to answer something first.
+      saveProgress(lastName, progress)
       setLearner({ name: lastName, ...progress })
       setScreen('list')
       setLogContext(lastName, progress.current_stage)
