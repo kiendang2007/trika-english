@@ -12,6 +12,7 @@ export default function MaterialPage({
   onOpenMaterial,
   correct,
   onAnswerPick,
+  allStagesDone,
   notice,
   onDismissNotice,
 }) {
@@ -66,12 +67,16 @@ export default function MaterialPage({
 
       <Notice notice={notice} onDismiss={onDismissNotice} />
 
-      {nextMaterial && (
+      {/* Material 16 is the last one in the last stage, so there is no next step to name. Once
+          every stage is done the finished state takes the button's place. */}
+      {nextMaterial ? (
         <div className="btn-row">
           <button type="button" className="btn-primary" onClick={() => onOpenMaterial(nextMaterial)}>
             Bước tiếp theo: {nextMaterial.title_vi}
           </button>
         </div>
+      ) : (
+        allStagesDone && <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
       )}
     </main>
   )

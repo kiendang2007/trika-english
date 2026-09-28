@@ -1,3 +1,6 @@
+import { advanceStage } from './progress.js'
+import { STAGE_COUNT } from './stages.js'
+
 const LAST_KEY = 'trika:last'
 const DEFAULT_PROGRESS = { current_stage: 1, correct: {} }
 
@@ -5,9 +8,12 @@ function progressKey(name) {
   return 'trika:' + name.trim().toLowerCase()
 }
 
+// Saved progress predates the restructure, so a stored stage can be anything up to the old 16.
+// Anything above the last stage is clamped down to it; advanceStage then puts the learner back
+// where the materials they have actually finished say they belong.
 function clampStage(stage) {
   if (typeof stage !== 'number' || Number.isNaN(stage)) return 1
-  return Math.min(Math.max(Math.round(stage), 1), 16)
+  return Math.min(Math.max(Math.round(stage), 1), STAGE_COUNT)
 }
 
 export function loadLastName() {
@@ -42,7 +48,8 @@ export function loadProgress(name) {
     if (!parsed || typeof parsed.correct !== 'object' || parsed.correct === null) {
       return { current_stage: 1, correct: {} }
     }
-    return { current_stage: clampStage(parsed.current_stage), correct: { ...parsed.correct } }
+    const correct = { ...parsed.correct }
+    return { current_stage: advanceStage(clampStage(parsed.current_stage), correct), correct }
   } catch {
     return { ...DEFAULT_PROGRESS, correct: {} }
   }
