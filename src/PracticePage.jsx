@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import StepDots from './components/StepDots.jsx'
 import SelectWordsBlock from './blocks/practice/SelectWordsBlock.jsx'
 import SortTwoBlock from './blocks/practice/SortTwoBlock.jsx'
@@ -32,8 +32,18 @@ export default function PracticePage({ practiceSet, onBack }) {
     })
   }
 
+  useEffect(() => {
+    if (finished) {
+      log('practice_done', { practice: practiceSet.practice_id })
+    }
+  }, [finished, practiceSet.practice_id])
+
   function goNext() {
     setIndex((i) => i + 1)
+  }
+
+  function restart() {
+    setIndex(0)
   }
 
   const Block = !finished ? BLOCKS[practiceSet.type] : null
@@ -68,8 +78,11 @@ export default function PracticePage({ practiceSet, onBack }) {
 
       {finished && (
         <>
-          <p className="all-done">Đã xong phần luyện tập này.</p>
+          <p className="all-done">Đã làm xong phần luyện tập.</p>
           <div className="btn-row">
+            <button type="button" className="btn-retry" onClick={restart}>
+              Làm lại
+            </button>
             <button type="button" className="btn-primary" onClick={onBack}>
               Về danh sách
             </button>
