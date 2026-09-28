@@ -20,7 +20,8 @@ export default function NameScreen({ onStart }) {
           id="learner-name"
           type="text"
           autoComplete="off"
-          placeholder="Ví dụ: Minh"
+          placeholder="Tên đăng nhập"
+          aria-label="Tên người học"
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
@@ -36,7 +37,7 @@ export default function NameScreen({ onStart }) {
         </div>
         {disabled && (
           <p id="start-hint" className="hint">
-            Nhập tên để mở nút Bắt đầu.
+            Nhập tên để bắt đầu.
           </p>
         )}
       </form>
