@@ -17,7 +17,7 @@ const BLOCKS = {
   two_step: TwoStepBlock,
 }
 
-export default function PracticePage({ practiceSet, onBack }) {
+export default function PracticePage({ practiceSet, onBack, onItemDone, finishedNote }) {
   const [index, setIndex] = useState(0)
   const items = practiceSet.items
   const total = items.length
@@ -38,7 +38,10 @@ export default function PracticePage({ practiceSet, onBack }) {
     }
   }, [finished, practiceSet.practice_id])
 
+  // Every question type reaches "Câu tiếp" only from a correct answer, so moving on is exactly
+  // "this item has been answered correctly". Recorded per item, so "Làm lại" clears nothing.
   function goNext() {
+    onItemDone?.(practiceSet, items[index].id)
     setIndex((i) => i + 1)
   }
 
@@ -78,7 +81,7 @@ export default function PracticePage({ practiceSet, onBack }) {
 
       {finished && (
         <>
-          <p className="all-done">Đã làm xong phần luyện tập.</p>
+          <p className="all-done">{finishedNote}</p>
           <div className="btn-row">
             <button type="button" className="btn-retry" onClick={restart}>
               Làm lại

@@ -13,6 +13,7 @@ export default function MaterialPage({
   correct,
   onAnswerPick,
   allStagesDone,
+  stageNote,
   notice,
   onDismissNotice,
 }) {
@@ -66,6 +67,10 @@ export default function MaterialPage({
       })}
 
       <Notice notice={notice} onDismiss={onDismissNotice} />
+
+      {/* Every question in this stage is answered, but the practice that opens the next stage
+          is not finished yet, so say which one is now the way forward. */}
+      {stageNote && <p className="stage-note">{stageNote}</p>}
 
       {/* The last material of the last stage has nothing after it, so there is no next step to
           name and no button is rendered. Once every stage is done the finished state takes its

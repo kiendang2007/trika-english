@@ -1,4 +1,9 @@
-import { isEverythingComplete, isMaterialComplete, isStageComplete } from '../progress.js'
+import {
+  isEverythingComplete,
+  isMaterialComplete,
+  isPracticeComplete,
+  isStageComplete,
+} from '../progress.js'
 import { STAGE_COUNT } from '../stages.js'
 import Notice from '../components/Notice.jsx'
 import { CheckStroke, LockIcon } from '../components/Icons.jsx'
@@ -13,10 +18,14 @@ function LockedInlineIcon() {
 }
 
 // The last stage has no stage after it, so a learner who finishes it stays on it. Completion,
-// not a stage number the learner has moved past, is what marks a stage done.
-function statusFor(stage, currentStage, correct) {
-  if (stage < currentStage || isStageComplete(stage, correct)) return 'done'
-  if (stage === currentStage) return 'current'
+// not a stage number the learner has moved past, is what marks a stage done. A stage the learner
+// has already passed stays done whatever the current rule says, so nobody who moved on under the
+// old rule sees their stages turn incomplete.
+function statusFor(stage, learner) {
+  if (stage < learner.current_stage || isStageComplete(stage, learner.correct, learner.practice)) {
+    return 'done'
+  }
+  if (stage === learner.current_stage) return 'current'
   return 'locked'
 }
 
@@ -32,8 +41,10 @@ function StageMarker({ stage, status }) {
   )
 }
 
-function StageCard({ stage, status, materials, correct, onOpenMaterial, practiceSets, onOpenPractice }) {
-  const practiceUnlocked = isStageComplete(stage, correct)
+function StageCard({ stage, status, materials, learner, onOpenMaterial, practiceSets, onOpenPractice }) {
+  const { correct } = learner
+  // Practice opens with its stage, not after it: finishing the practice is what finishes it.
+  const practiceUnlocked = stage <= learner.current_stage
   return (
     <div className={`stage-card ${status}`}>
       <div className="stage-card-head">
@@ -64,6 +75,7 @@ function StageCard({ stage, status, materials, correct, onOpenMaterial, practice
                 >
                   {!practiceUnlocked && <LockedInlineIcon />}
                   {p.title_vi}
+                  {isPracticeComplete(p, learner.practice) ? ' ✓' : ''}
                 </button>
               </li>
             ))}
@@ -103,12 +115,12 @@ export default function ListScreen({
         </button>
       </div>
       <Notice notice={notice} onDismiss={onDismissNotice} />
-      {isEverythingComplete(learner.correct) && (
+      {isEverythingComplete(learner.correct, learner.practice) && (
         <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
       )}
       <ol className="stage-trail">
         {stages.map(({ stage, materials: stageMaterials }) => {
-          const status = statusFor(stage, learner.current_stage, learner.correct)
+          const status = statusFor(stage, learner)
           const solid = status === 'done'
           return (
             <li key={stage}>
@@ -121,7 +133,7 @@ export default function ListScreen({
                   stage={stage}
                   status={status}
                   materials={stageMaterials}
-                  correct={learner.correct}
+                  learner={learner}
                   onOpenMaterial={onOpenMaterial}
                   practiceSets={practiceSets.filter((p) => p.stage === stage)}
                   onOpenPractice={onOpenPractice}

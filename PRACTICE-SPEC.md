@@ -66,5 +66,21 @@ lại. Không chấm điểm, không đếm số câu đúng, không hiện tỉ
 
 ## Gating
 
-Phần luyện tập của một giai đoạn mở khi giai đoạn đó đã xong. Luyện tập không bao giờ chặn giai
-đoạn sau. Làm xong luyện tập không đổi `current_stage`.
+Chốt ngày 28/09, thay quy tắc cũ ở D25.
+
+Phần luyện tập của một giai đoạn mở cùng lúc với giai đoạn đó. Giai đoạn nào người học mở được
+thì mọi phần luyện tập của giai đoạn đó cũng mở được, không cần làm xong câu hỏi trong bài trước.
+Luyện tập của một giai đoạn chưa mở thì vẫn hiện ra và vẫn bấm được, kèm lời từ chối như cũ.
+
+Làm xong tất cả các phần luyện tập của một giai đoạn là điều kiện để mở giai đoạn sau. Câu hỏi
+trong bài không còn quyết định việc này. Một phần luyện tập xong khi mọi câu trong đó đã được trả
+lời đúng ít nhất một lần. Kết quả lưu theo từng câu, nên bấm "Làm lại" không xoá gì.
+
+Giai đoạn nào không có file luyện tập nào thì giữ quy tắc cũ: các bài học của giai đoạn đó quyết
+định. Hiện tại cả mười một giai đoạn đều có luyện tập. Danh sách này đọc từ `content/practice/`,
+không ghi cứng trong code.
+
+`current_stage` chỉ tăng một bậc khi giai đoạn vừa xong đúng bằng giai đoạn hiện tại. Nó không bao
+giờ giảm và không bao giờ vượt quá giai đoạn cuối. Làm lại luyện tập của một giai đoạn cũ không
+đổi gì. Giai đoạn 11 là giai đoạn cuối: xong phần luyện tập cuối của nó là hết lộ trình, và
+`current_stage` vẫn là 11.

@@ -7,8 +7,25 @@ import PracticePage from './PracticePage.jsx'
 import { materials } from './content.js'
 import { practiceSets } from './practice.js'
 import { loadLastName, saveLastName, hasProgress, loadProgress, saveProgress } from './learner.js'
-import { advanceStage, isEverythingComplete, isMaterialComplete, isStageComplete } from './progress.js'
+import {
+  advanceStage,
+  areStageMaterialsComplete,
+  isEverythingComplete,
+  isMaterialComplete,
+  isPracticeComplete,
+  isStagePracticeComplete,
+  practiceItemKey,
+  stageHasPractice,
+} from './progress.js'
 import { STAGE_COUNT } from './stages.js'
+import {
+  PRACTICE_DONE,
+  ROUTE_DONE,
+  lockedPracticeMessage,
+  lockedStageMessage,
+  materialsDoneMessage,
+  stageOpenedMessage,
+} from './messages.js'
 import { log, setLogContext } from './log.js'
 
 const BUILD_TIME = __BUILD_TIME__
@@ -66,10 +83,11 @@ export default function App() {
       const previous = loadProgress(nameFromLink)
       const current_stage = existed ? Math.max(previous.current_stage, gd) : gd
       const correct = existed ? previous.correct : {}
+      const practice = existed ? previous.practice : {}
 
       saveLastName(nameFromLink)
-      saveProgress(nameFromLink, { current_stage, correct })
-      setLearner({ name: nameFromLink, current_stage, correct })
+      saveProgress(nameFromLink, { current_stage, correct, practice })
+      setLearner({ name: nameFromLink, current_stage, correct, practice })
       setScreen('list')
       setLogContext(nameFromLink, current_stage)
       log('open')
@@ -124,8 +142,10 @@ export default function App() {
       const wasMaterialComplete = material ? isMaterialComplete(material, prev.correct) : false
       const isNowMaterialComplete = material ? isMaterialComplete(material, correct) : false
 
-      const current_stage = advanceStage(prev.current_stage, correct)
-      saveProgress(prev.name, { current_stage, correct })
+      // For a stage that has practice this can no longer move the learner on: advanceStage
+      // reads the practice for those stages. A stage without any practice still advances here.
+      const current_stage = advanceStage(prev.current_stage, correct, prev.practice)
+      saveProgress(prev.name, { current_stage, correct, practice: prev.practice })
 
       if (!wasMaterialComplete && isNowMaterialComplete) {
         setLogContext(prev.name, current_stage)
@@ -136,7 +156,28 @@ export default function App() {
         log('stage_up', { stage: current_stage })
       }
 
-      return { name: prev.name, current_stage, correct }
+      return { name: prev.name, current_stage, correct, practice: prev.practice }
+    })
+  }
+
+  // Called when the learner moves past a practice question, which every question type allows
+  // only after a correct answer. Held per item, so "Làm lại" replays without clearing anything.
+  function handlePracticeItemDone(practiceSet, itemId) {
+    setLearner((prev) => {
+      if (!prev) return prev
+      const key = practiceItemKey(practiceSet, itemId)
+      if (prev.practice[key]) return prev
+      const practice = { ...prev.practice, [key]: true }
+
+      const current_stage = advanceStage(prev.current_stage, prev.correct, practice)
+      saveProgress(prev.name, { current_stage, correct: prev.correct, practice })
+
+      if (current_stage > prev.current_stage) {
+        setLogContext(prev.name, current_stage)
+        log('stage_up', { stage: current_stage })
+      }
+
+      return { name: prev.name, current_stage, correct: prev.correct, practice }
     })
   }
 
@@ -147,7 +188,7 @@ export default function App() {
   function openMaterial(material) {
     if (!learner) return
     if (material.stage > learner.current_stage) {
-      showNotice(`Giai đoạn này chưa mở. Hãy học xong Giai đoạn ${learner.current_stage} trước.`)
+      showNotice(lockedStageMessage(material.stage, learner.current_stage))
       setLogContext(learner.name, learner.current_stage)
       log('locked_click', { material: material.material_id })
       return
@@ -162,10 +203,12 @@ export default function App() {
     setScreen('list')
   }
 
+  // A practice is openable exactly when its own stage is, the same test the materials use.
+  // It cannot wait for the stage to be finished, because finishing it is what finishes the stage.
   function openPractice(set) {
     if (!learner) return
-    if (!isStageComplete(set.stage, learner.correct)) {
-      showNotice(`Phần luyện tập này chưa mở. Hãy học xong Giai đoạn ${set.stage} trước.`)
+    if (set.stage > learner.current_stage) {
+      showNotice(lockedPracticeMessage(set.stage, learner.current_stage))
       setLogContext(learner.name, learner.current_stage)
       log('practice_locked_click', { practice: set.practice_id })
       return
@@ -181,6 +224,25 @@ export default function App() {
 
   const currentMaterial = materials.find((m) => m.material_id === currentMaterialId)
   const currentPracticeSet = practiceSets.find((p) => p.practice_id === currentPracticeId)
+
+  // The line under a material, once every question in its stage is answered. It only appears
+  // when the practice that actually opens the next stage is still outstanding.
+  function stageNoteFor(material) {
+    if (!learner) return null
+    if (!areStageMaterialsComplete(material.stage, learner.correct)) return null
+    if (!stageHasPractice(material.stage)) return null
+    if (isStagePracticeComplete(material.stage, learner.practice)) return null
+    return materialsDoneMessage(material.stage)
+  }
+
+  // What the practice screen says once its last question is answered.
+  function practiceNoteFor(set) {
+    if (!learner) return PRACTICE_DONE
+    if (!isPracticeComplete(set, learner.practice)) return PRACTICE_DONE
+    if (!isStagePracticeComplete(set.stage, learner.practice)) return PRACTICE_DONE
+    if (set.stage >= STAGE_COUNT) return ROUTE_DONE
+    return stageOpenedMessage(set.stage)
+  }
 
   return (
     <div className="page">
@@ -208,7 +270,8 @@ export default function App() {
           onOpenMaterial={openMaterial}
           correct={learner.correct}
           onAnswerPick={handleAnswerPick}
-          allStagesDone={isEverythingComplete(learner.correct)}
+          allStagesDone={isEverythingComplete(learner.correct, learner.practice)}
+          stageNote={stageNoteFor(currentMaterial)}
           notice={lockMessage}
           onDismissNotice={() => setLockMessage(null)}
         />
@@ -218,6 +281,8 @@ export default function App() {
           key={currentPracticeSet.practice_id}
           practiceSet={currentPracticeSet}
           onBack={backToList}
+          onItemDone={handlePracticeItemDone}
+          finishedNote={practiceNoteFor(currentPracticeSet)}
         />
       )}
     </div>

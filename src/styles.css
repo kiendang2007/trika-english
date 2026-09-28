@@ -430,6 +430,19 @@ strong {
   color: var(--mocha);
 }
 
+/* The line at the foot of a material once its stage's questions are done and only the
+   practice is left. Quieter than .all-done: it points forward, it does not celebrate. */
+.stage-note {
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--sand);
+  border: 1px solid var(--sand-line);
+  border-radius: var(--r-control);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--mocha-ink);
+}
+
 /* ---------- Name screen ---------- */
 
 .page > main.name-screen {
