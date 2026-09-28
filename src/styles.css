@@ -1194,6 +1194,10 @@ button.option:hover {
   color: var(--wrong-ink);
 }
 
+.order-chip.dragging {
+  opacity: 0.4;
+}
+
 /* ---------- Practice: answer line (reorder) ---------- */
 
 .answer-line {
