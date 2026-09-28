@@ -399,8 +399,8 @@ n("OR5", "OR", "orthography", None, "Viết hoa", "Capitalisation", "A1", "teach
 n("OR6", "OR", "orthography", None, "Quy tắc chính tả khi thêm đuôi", "Spelling rules for endings", "A1", "teach",
   False, ["OR","M1"], note="Doubling before -ing, y to ies, dropping silent e.")
 
-# ------------------------------------------------------ V1 SCOPE: FIFTEEN STAGES
-# Sequence set by the teacher, 16 September, revised 18 September. Stages 1 to 4 build a
+# ------------------------------------------------------- V1 SCOPE: ELEVEN STAGES
+# Sequence set by the teacher, 16 September, revised 18 and 28 September. Stages 1 to 4 build a
 # clause out of word classes a learner can hold on their own. Stage 5 adds the pronouns,
 # which need the clause first. Stage 6 introduces the auxiliary, stage 7 completes the
 # auxiliary inventory with the modals, and everything after that is one move from it.

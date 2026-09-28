@@ -1,12 +1,17 @@
 import { useState } from 'react'
+import { STAGE_COUNT } from '../stages.js'
 
+// Stage 11 holds five materials, so commas carry the list and "và" only joins the last one.
 function stageLabel(stage, materials) {
   const titles = materials
     .filter((m) => m.stage === stage)
     .sort((a, b) => a.material_id - b.material_id)
     .map((m) => m.title_vi)
-    .join(' và ')
-  return `Giai đoạn ${stage}: ${titles}`
+  const list =
+    titles.length > 1
+      ? `${titles.slice(0, -1).join(', ')} và ${titles[titles.length - 1]}`
+      : titles.join('')
+  return `Giai đoạn ${stage}: ${list}`
 }
 
 export default function TeacherScreen({ materials }) {
@@ -56,7 +61,7 @@ export default function TeacherScreen({ materials }) {
             value={stage}
             onChange={(event) => setStage(Number(event.target.value))}
           >
-            {Array.from({ length: 15 }, (_, i) => i + 1).map((s) => (
+            {Array.from({ length: STAGE_COUNT }, (_, i) => i + 1).map((s) => (
               <option key={s} value={s}>
                 {stageLabel(s, materials)}
               </option>

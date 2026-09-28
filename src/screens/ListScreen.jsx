@@ -1,4 +1,5 @@
 import { isMaterialComplete, isStageComplete } from '../progress.js'
+import { STAGE_COUNT, FINISHED_STAGE } from '../stages.js'
 import Notice from '../components/Notice.jsx'
 import { CheckStroke, LockIcon } from '../components/Icons.jsx'
 
@@ -82,7 +83,7 @@ export default function ListScreen({
   onDismissNotice,
 }) {
   const stages = []
-  for (let stage = 1; stage <= 15; stage++) {
+  for (let stage = 1; stage <= STAGE_COUNT; stage++) {
     stages.push({
       stage,
       materials: materials
@@ -100,7 +101,7 @@ export default function ListScreen({
         </button>
       </div>
       <Notice notice={notice} onDismiss={onDismissNotice} />
-      {learner.current_stage === 16 && (
+      {learner.current_stage >= FINISHED_STAGE && (
         <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
       )}
       <ol className="stage-trail">

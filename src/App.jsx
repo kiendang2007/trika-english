@@ -8,6 +8,7 @@ import { materials } from './content.js'
 import { practiceSets } from './practice.js'
 import { loadLastName, saveLastName, hasProgress, loadProgress, saveProgress } from './learner.js'
 import { advanceStage, isMaterialComplete, isStageComplete } from './progress.js'
+import { STAGE_COUNT, FINISHED_STAGE } from './stages.js'
 import { log, setLogContext } from './log.js'
 
 const BUILD_TIME = __BUILD_TIME__
@@ -51,7 +52,10 @@ export default function App() {
     const gdRaw = params.get('gd')
     const hvRaw = params.get('hv')
     const gdValid =
-      gdRaw !== null && /^\d+$/.test(gdRaw) && Number(gdRaw) >= 1 && Number(gdRaw) <= 15
+      gdRaw !== null &&
+      /^\d+$/.test(gdRaw) &&
+      Number(gdRaw) >= 1 &&
+      Number(gdRaw) <= STAGE_COUNT
     const nameFromLink = hvRaw !== null ? hvRaw.trim() : ''
 
     if (gdValid && nameFromLink.length > 0) {
@@ -202,6 +206,7 @@ export default function App() {
           onOpenMaterial={openMaterial}
           correct={learner.correct}
           onAnswerPick={handleAnswerPick}
+          allStagesDone={learner.current_stage >= FINISHED_STAGE}
           notice={lockMessage}
           onDismissNotice={() => setLockMessage(null)}
         />
