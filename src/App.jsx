@@ -38,19 +38,28 @@ function formatBuildTime(iso) {
   }
 }
 
-export function nextMaterialFor(material) {
+// What "Bước tiếp theo" points to from a material. On any material but the last of its stage,
+// this is always the next material in the same stage. On the last material of a stage that has
+// practice, it is that stage's practice instead of the next stage's first material, since the
+// practice is what actually opens the next stage. A stage with no practice file keeps pointing
+// at the next stage's first material.
+export function nextStepFor(material) {
   const sameStage = materials
     .filter((m) => m.stage === material.stage)
     .sort((a, b) => a.material_id - b.material_id)
   const idx = sameStage.findIndex((m) => m.material_id === material.material_id)
-  if (idx < sameStage.length - 1) return sameStage[idx + 1]
+  if (idx < sameStage.length - 1) return { kind: 'material', material: sameStage[idx + 1] }
+
+  if (stageHasPractice(material.stage)) {
+    return { kind: 'practice', stage: material.stage }
+  }
 
   // Whatever stage the remaining materials start, rather than "this stage plus one", so the
   // last material of the last stage finds nothing and the button is not rendered at all.
   const later = materials
     .filter((m) => m.stage > material.stage)
     .sort((a, b) => a.material_id - b.material_id)
-  return later[0] ?? null
+  return later[0] ? { kind: 'material', material: later[0] } : null
 }
 
 export default function App() {
@@ -59,6 +68,7 @@ export default function App() {
   const [currentMaterialId, setCurrentMaterialId] = useState(null)
   const [currentPracticeId, setCurrentPracticeId] = useState(null)
   const [lockMessage, setLockMessage] = useState(null)
+  const [highlightStage, setHighlightStage] = useState(null)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -200,6 +210,24 @@ export default function App() {
 
   function backToList() {
     setLockMessage(null)
+    setHighlightStage(null)
+    setScreen('list')
+  }
+
+  // From the last material of a stage that has practice: same destination as "Về danh sách",
+  // but scrolled to and briefly highlighting that stage's practice section. The stage is always
+  // the material's own stage, so it is openable whenever the material was, but the same locked
+  // refusal covers the rare case where it is not.
+  function goToStagePractice(stage) {
+    if (!learner) return
+    if (stage > learner.current_stage) {
+      showNotice(lockedPracticeMessage(stage, learner.current_stage))
+      setLogContext(learner.name, learner.current_stage)
+      log('practice_locked_click', { practice: stage })
+      return
+    }
+    setLockMessage(null)
+    setHighlightStage(stage)
     setScreen('list')
   }
 
@@ -219,16 +247,23 @@ export default function App() {
   }
 
   useEffect(() => {
+    // The stage-practice destination scrolls itself to the stage card; scrolling to the top
+    // first would only be undone a moment later.
+    if (screen === 'list' && highlightStage) return
     window.scrollTo(0, 0)
-  }, [screen, currentMaterialId, currentPracticeId])
+  }, [screen, currentMaterialId, currentPracticeId, highlightStage])
 
   const currentMaterial = materials.find((m) => m.material_id === currentMaterialId)
   const currentPracticeSet = practiceSets.find((p) => p.practice_id === currentPracticeId)
 
   // The line under a material, once every question in its stage is answered. It only appears
-  // when the practice that actually opens the next stage is still outstanding.
+  // when the practice that actually opens the next stage is still outstanding, and only on a
+  // material that has no "Bước tiếp theo" of its own to say so: the last material of the stage
+  // already names the same practice next to its own button, so showing this line there too
+  // would just repeat it.
   function stageNoteFor(material) {
     if (!learner) return null
+    if (nextStepFor(material)?.kind === 'practice') return null
     if (!areStageMaterialsComplete(material.stage, learner.correct)) return null
     if (!stageHasPractice(material.stage)) return null
     if (isStagePracticeComplete(material.stage, learner.practice)) return null
@@ -258,6 +293,8 @@ export default function App() {
           onSwitchLearner={handleSwitchLearner}
           notice={lockMessage}
           onDismissNotice={() => setLockMessage(null)}
+          highlightStage={highlightStage}
+          onHighlightDone={() => setHighlightStage(null)}
         />
       )}
       {screen === 'material' && learner && currentMaterial && (
@@ -266,8 +303,9 @@ export default function App() {
           material={currentMaterial}
           stageMaterials={materials.filter((m) => m.stage === currentMaterial.stage)}
           onBack={backToList}
-          nextMaterial={nextMaterialFor(currentMaterial)}
+          nextStep={nextStepFor(currentMaterial)}
           onOpenMaterial={openMaterial}
+          onGoToStagePractice={goToStagePractice}
           correct={learner.correct}
           onAnswerPick={handleAnswerPick}
           allStagesDone={isEverythingComplete(learner.correct, learner.practice)}

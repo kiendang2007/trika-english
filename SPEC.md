@@ -212,7 +212,11 @@ Nothing under a key that starts with `_` is ever rendered. `video_url` is null f
 in v1; when it is null, render nothing for it.
 
 At the bottom of the page, **Bước tiếp theo** names what comes next: the next material in the same
-stage, or the first material of the next stage.
+stage, or, on the last material of a stage, the first material of the next stage. If the last
+material's own stage has at least one practice section, the button goes to that stage's practice
+instead, since the practice is what actually opens the next stage: a line above it names the
+practice by stage number, and the button itself reads "Sang phần luyện tập". A stage with no
+practice section keeps going straight to the next stage's first material.
 
 ## 9. Practice and the five-step loop
 

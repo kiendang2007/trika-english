@@ -552,6 +552,19 @@ strong {
   box-shadow: none;
 }
 
+.stage-card.highlight {
+  animation: stage-card-highlight 2s ease-out;
+}
+
+@keyframes stage-card-highlight {
+  0% {
+    box-shadow: 0 0 0 3px var(--gold);
+  }
+  100% {
+    box-shadow: var(--shadow-card);
+  }
+}
+
 .stage-card-head {
   display: flex;
   flex-wrap: wrap;

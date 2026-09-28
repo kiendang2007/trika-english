@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import {
   isEverythingComplete,
   isMaterialComplete,
@@ -41,12 +42,22 @@ function StageMarker({ stage, status }) {
   )
 }
 
-function StageCard({ stage, status, materials, learner, onOpenMaterial, practiceSets, onOpenPractice }) {
+function StageCard({
+  stage,
+  status,
+  materials,
+  learner,
+  onOpenMaterial,
+  practiceSets,
+  onOpenPractice,
+  highlighted,
+  cardRef,
+}) {
   const { correct } = learner
   // Practice opens with its stage, not after it: finishing the practice is what finishes it.
   const practiceUnlocked = stage <= learner.current_stage
   return (
-    <div className={`stage-card ${status}`}>
+    <div ref={cardRef} className={`stage-card ${status}${highlighted ? ' highlight' : ''}`}>
       <div className="stage-card-head">
         <h2 className="stage-title">Giai đoạn {stage}</h2>
         <span className={`pill pill-${status}`}>{STATUS_LABEL[status]}</span>
@@ -95,6 +106,8 @@ export default function ListScreen({
   onSwitchLearner,
   notice,
   onDismissNotice,
+  highlightStage,
+  onHighlightDone,
 }) {
   const stages = []
   for (let stage = 1; stage <= STAGE_COUNT; stage++) {
@@ -105,6 +118,17 @@ export default function ListScreen({
         .sort((a, b) => a.material_id - b.material_id),
     })
   }
+
+  const highlightedCardRef = useRef(null)
+
+  // Arriving from "Sang phần luyện tập": jump to the stage's card and let it glow briefly, the
+  // same way the learner would find it by scrolling, then let the highlight fade on its own.
+  useEffect(() => {
+    if (!highlightStage) return
+    highlightedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const timer = setTimeout(() => onHighlightDone?.(), 2000)
+    return () => clearTimeout(timer)
+  }, [highlightStage, onHighlightDone])
 
   return (
     <main>
@@ -137,6 +161,8 @@ export default function ListScreen({
                   onOpenMaterial={onOpenMaterial}
                   practiceSets={practiceSets.filter((p) => p.stage === stage)}
                   onOpenPractice={onOpenPractice}
+                  highlighted={stage === highlightStage}
+                  cardRef={stage === highlightStage ? highlightedCardRef : null}
                 />
               </div>
             </li>

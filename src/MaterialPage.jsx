@@ -8,8 +8,9 @@ export default function MaterialPage({
   material,
   stageMaterials,
   onBack,
-  nextMaterial,
+  nextStep,
   onOpenMaterial,
+  onGoToStagePractice,
   correct,
   onAnswerPick,
   allStagesDone,
@@ -74,13 +75,33 @@ export default function MaterialPage({
 
       {/* The last material of the last stage has nothing after it, so there is no next step to
           name and no button is rendered. Once every stage is done the finished state takes its
-          place. */}
-      {nextMaterial ? (
-        <div className="btn-row">
-          <button type="button" className="btn-primary" onClick={() => onOpenMaterial(nextMaterial)}>
-            Bước tiếp theo: {nextMaterial.title_vi}
-          </button>
-        </div>
+          place. On the last material of a stage that has practice, the next step is that
+          stage's practice rather than the next stage's first material. */}
+      {nextStep ? (
+        nextStep.kind === 'practice' ? (
+          <>
+            <p className="stage-note">Bước tiếp theo: luyện tập giai đoạn {nextStep.stage}</p>
+            <div className="btn-row">
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => onGoToStagePractice(nextStep.stage)}
+              >
+                Sang phần luyện tập
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="btn-row">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => onOpenMaterial(nextStep.material)}
+            >
+              Bước tiếp theo: {nextStep.material.title_vi}
+            </button>
+          </div>
+        )
       ) : (
         allStagesDone && <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
       )}
