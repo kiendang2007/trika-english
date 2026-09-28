@@ -1,7 +1,8 @@
 # SPEC
 
 What the product is. No dates, no people, no justification. Those live in `LICH-TRINH.md`
-and `DECISIONS.md`. Rewritten 16 September after the scope change.
+and `DECISIONS.md`. Rewritten 16 September after the scope change. Stage count changed from
+fifteen to eleven on 28 September (see D26).
 
 This file goes in the repository root. Claude Code reads it from there and re-reads it whenever it
 changes. The content lives in `content/materials/`, one JSON file per material.
@@ -43,9 +44,10 @@ The diagnostic was cut on 16 September. The **route** survives; the **test** doe
 
 ## 3. The eleven stages
 
-Sequence set by the teacher on 16 September, revised 18 September. Generated from `nodes.json`
-and validated by `build_nodes.py`, which checks that no node is taught before something it
-requires.
+Sequence set by the teacher on 16 September, revised 18 September. Stages 12 to 15 of the
+earlier fifteen-stage sequence were merged into stage 11 on 28 September. Generated from
+`nodes.json` and validated by `build_nodes.py`, which checks that no node is taught before
+something it requires.
 
 **Stages 1 to 4 build a clause** out of word classes a learner can hold on their own.
 **Stage 5 adds the pronouns**, which need the clause first. **Stage 6 introduces the auxiliary**
@@ -64,13 +66,9 @@ is one move from the auxiliary.**
 | 8 | 9 | `Y7` | Phủ định | `not` sits immediately after the auxiliary |
 | 9 | 10 | `C4.2` | Câu hỏi Yes/No | Move the auxiliary to the front, and answer with it |
 | 10 | 11 | `C4.3` | Câu hỏi Wh- | The same move, with a question word in front |
-| 11 | 12, 13, 14, 15, 16 | `Y1` `M1.4` `M1.3` `Y2` `M1.5` `M1.6` `Y3` `Y13` `W2.5` | Thì, thể, dạng bị động, tổng hợp các thì, động từ bất quy tắc | Tense, aspect, passive, the whole grid, and irregulars, taught together as one stage |
+| 11 | 12 to 16 | `Y1` `M1.4` `M1.3` `Y2` `M1.5` `M1.6` `Y3` `Y13` `W2.5` | Thì, thể, dạng bị động, tổng hợp các thì, động từ bất quy tắc | Tense and aspect with the forms they need (12, 13), the passive (14), the 12 active and 12 passive forms and the five in the letter T (15), then irregulars as the exception to `-ed` (16). The last stage. |
 
-Tense, aspect, passive, the tense summary, and irregular verbs were five separate stages (11 to
-15) until 28 September, when the teacher merged them into one stage 11, taught across five
-materials. `build_nodes.py`'s `STAGES` list reflects this as a single entry combining nine nodes.
-
-33 nodes in 11 stages, 16 materials.
+34 nodes in 11 stages, 16 materials.
 purpose would make no sense, which is why tense arrives with `-ed` and aspect with `V-3` and
 `-ing`.
 
@@ -92,11 +90,11 @@ taught at once. `build_nodes.py` declares this in `REASSIGNED` and fails the bui
 reassignment that is not declared there.
 
 **Why modals sit at stage 7 rather than late.** Modals do not inflect for tense. Taught after
-stage 11 they contradict the rule "the auxiliary carries the tense" and the learner has to
-unlearn something. Taught at stage 7 the order reverses: stage 11 can say "except the modals you
-already met, which never change." A forward reference instead of a retraction. It also means
-`will` is already known when the future column of the 3x4 grid arrives, so the grid needs no
-special pleading.
+tense, which arrives in stage 11, they contradict the rule "the auxiliary carries the tense" and
+the learner has to unlearn something. Taught at stage 7 the order reverses: stage 11 can say
+"except the modals you already met, which never change." A forward reference instead of a
+retraction. It also means `will` is already known when the future column of the 3x4 grid
+arrives, so the grid needs no special pleading.
 
 **On tense count.** English has two inflectional tenses, past and present. The future column of
 the grid is formed with the modal `will`. Both are true and stage 7 is what makes them
@@ -113,7 +111,7 @@ and validated by `build_nodes.py`, which is the single source of truth. Never ha
 
 Two fields drive v1:
 
-- `in_v1` is true for the 33 nodes in the eleven stages.
+- `in_v1` is true for the 34 nodes in the eleven stages.
 - `stage` is 1 to 11 for those nodes and null everywhere else. Several nodes may share a stage.
 - `chain_order` mirrors `stage` and is kept only for compatibility.
 
@@ -130,7 +128,7 @@ Carried on items, used in correction cards to name the Vietnamese-specific cause
 
 | Tag | Meaning | In this chain |
 |---|---|---|
-| `AUX` | dropped auxiliaries | the central one, stages 5 to 13 |
+| `AUX` | dropped auxiliaries | the central one, stages 6 to 11 |
 | `PLS` | plural and third-person -s | stages 1 and 10 |
 | `BSH` | tense backshift | not in v1 |
 | `FCC` | final consonant clusters | not in v1 |
@@ -178,8 +176,8 @@ A locked stage is clickable and shows why it is locked, naming the stage that co
 ## 8. Material page
 
 A stage holds one or more materials. Stage 1 holds two, stage 11 holds five, every other stage
-holds one. A material is
-one page, rendered top to bottom from the `blocks` array in its JSON file, in exactly that order:
+holds one. A material is one page, rendered top to bottom from the `blocks` array in its JSON
+file, in exactly that order:
 
 - `text`: `body_vi` as a paragraph, then `list` as bullets if present.
 - `section`: `heading_vi` as a heading, then `body_vi` if present, then `table` if present.
@@ -278,13 +276,13 @@ Invariants: exactly one defensible answer per item; every `mcq` wrong option has
 
 All content is JSON in the repository. Nobody needs a database to change a question.
 
-- **`content/nodes.json`**: generated by `build_nodes.py`, which lives at the repository root
-  alongside `check.py` (validates the content, run after every regeneration). Never hand-edit
-  `nodes.json`; edit `STAGES` in `build_nodes.py` and rerun it.
+- **`content/nodes.json`**: generated by `build_nodes.py`. Never hand-edit.
 - **`content/materials/NN-slug.json`**: one file per material, sixteen in all. The site imports every
   file and orders them by `material_id`. Each file carries `material_id`, `title_vi`, `stage`,
   `nodes`, `video_url` and the ordered `blocks`. The block and item formats are in
   `material-format.md`. Items live inside the blocks; there is no separate items file.
+- `render_material.py` turns a material JSON into readable markdown for humans. It is not part of
+  the site.
 
 ## 13. Stack
 
@@ -295,12 +293,10 @@ All content is JSON in the repository. Nobody needs a database to change a quest
   write in try/catch and render correctly when it comes back empty.
 - Logging: one `POST` to a Google Apps Script web app appending a row to a Google Sheet. No keys
   in the client. A failed log never breaks the lesson.
-- GitHub `kiendang2007/commbat-english`, Vercel deploying from `main` on every push. The repo
-  name and Vercel address keep the old product name on purpose: learners never see them, and
-  changing either after real usage started would break saved progress. See `DECISIONS.md`, D21.
+- GitHub `kiendang2007/commbat-english`, Vercel deploying from `main` on every push.
 
-Must work on a 5 inch phone over mobile data. The build timestamp that used to print on every
-screen was removed deliberately in PR #11 and stays out.
+Must work on a 5 inch phone over mobile data. The build timestamp stays printed on screen until
+submission.
 
 ## 14. What the build must never do
 

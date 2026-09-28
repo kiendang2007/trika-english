@@ -1,6 +1,8 @@
 # Mười sáu material và mười một stage
 
-Cập nhật 28/09. Sinh ra từ `materials/*.json`, không sửa tay file này.
+Cập nhật 28/09. Sinh ra từ `materials/*.json`, không sửa tay file này. Bản trong project này đã
+được sửa tay để khớp với việc gộp stage 12 đến 15 vào stage 11 (D26); bản trong repo cần được
+sinh lại từ các file JSON.
 
 | # | Material | Stage | Số câu | Tag L1 | Câu hỏi còn mở |
 |---:|---|---:|---:|---|---:|
@@ -22,7 +24,3 @@ Cập nhật 28/09. Sinh ra từ `materials/*.json`, không sửa tay file này.
 | 16 | Các động từ bất quy tắc | 11 | 3 | không | 0 |
 
 Tổng: 68 câu hỏi, 2 câu hỏi còn mở. V1 có 33 node trong 11 stage.
-
-**Đổi ngày 28/09:** material 13-16 gộp vào stage 11 cùng material 12 (thì, thể, bị động, tổng
-hợp thì, động từ bất quy tắc dạy chung một giai đoạn). Trước đó là năm stage riêng (11-15).
-Chưa có học viên nào tới stage 11 khi đổi, nên không có tiến độ bị ảnh hưởng.
