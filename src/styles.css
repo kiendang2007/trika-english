@@ -38,6 +38,15 @@
   --locked-line: #dcd2c2;
   --locked-ink: #635749;
   --locked-badge: #e7e1d6;
+  --locked-mid: #a49a8e;
+
+  /* Practice: tints of correct/wrong used only in the reorder answer line */
+  --line-pattern: #d9c6a4;
+  --correct-pattern: #9ad3ae;
+  --correct-pattern-bg: #f3faf5;
+  --wrong-pattern: #efc6b4;
+  --wrong-pattern-bg: #fdf5f1;
+  --slot-dash: #c9b692;
 
   /* Radius and shadow */
   --r-control: 14px;
@@ -1020,4 +1029,458 @@ button.option:hover {
 .teacher-link-text:focus-visible {
   outline: var(--focus-ring);
   outline-offset: 2px;
+}
+
+/* ---------- Practice: shared chrome ---------- */
+
+.practice-list {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.practice-list-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.material-link.locked-item {
+  color: var(--locked-ink);
+}
+
+.step-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--locked-line);
+}
+
+.step-dot.done {
+  background: var(--mocha);
+}
+
+.step-dot.current {
+  width: 10px;
+  height: 10px;
+  background: var(--gold);
+}
+
+.practice-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sentence-box {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--ivory);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--mocha);
+  overflow-wrap: anywhere;
+}
+
+.warning-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: var(--champagne);
+  border: 1px solid var(--champagne-line);
+  border-radius: var(--r-control);
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 600;
+  color: var(--gold-ink-on-champagne);
+}
+
+.warning-glyph {
+  flex: none;
+  font-weight: 800;
+}
+
+/* ---------- Practice: chips ---------- */
+
+.chip-pool {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chip-pool-label,
+.chip-group-label {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chip-pool-row,
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.order-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--mocha-ink);
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.order-chip.selected {
+  border-color: var(--gold);
+  background: var(--champagne);
+}
+
+.order-chip.placed {
+  border-color: var(--gold);
+  background: var(--champagne);
+  color: var(--mocha-ink);
+}
+
+.order-chip.suspect {
+  border-color: var(--wrong);
+}
+
+.order-chip.correct {
+  border-color: var(--correct);
+  background: var(--correct-bg);
+  color: var(--correct-ink);
+  cursor: default;
+}
+
+.order-chip.wrong {
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
+  color: var(--wrong-ink);
+  cursor: default;
+}
+
+.chip-return {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gold-ink-on-champagne);
+}
+
+.chip-return.suspect {
+  color: var(--wrong-ink);
+}
+
+/* ---------- Practice: answer line (reorder) ---------- */
+
+.answer-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 8px;
+  min-height: 112px;
+  padding: 8px 12px;
+  border-radius: var(--r-card);
+  border: 1.5px solid var(--line);
+  background-color: var(--card);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 52px,
+    var(--line-pattern) 52px,
+    var(--line-pattern) 54px
+  );
+}
+
+.answer-line.correct {
+  border-color: var(--correct);
+  background-color: var(--correct-pattern-bg);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 52px,
+    var(--correct-pattern) 52px,
+    var(--correct-pattern) 54px
+  );
+}
+
+.answer-line.wrong {
+  border-color: var(--wrong);
+  background-color: var(--wrong-pattern-bg);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 52px,
+    var(--wrong-pattern) 52px,
+    var(--wrong-pattern) 54px
+  );
+}
+
+.answer-line-empty {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--locked-mid);
+}
+
+/* ---------- Practice: select_words ---------- */
+
+.token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.token {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--mocha-ink);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.token.selected {
+  border-color: var(--gold);
+  background: var(--champagne);
+  font-weight: 700;
+}
+
+.token.correct {
+  border-color: var(--correct);
+  background: var(--correct-bg);
+  color: var(--correct-ink);
+  font-weight: 700;
+}
+
+.token.wrong {
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
+  color: var(--wrong-ink);
+  font-weight: 700;
+}
+
+.token.missed {
+  border: 1.5px dashed var(--correct);
+  color: var(--correct-ink);
+}
+
+.token:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ---------- Practice: sort_two ---------- */
+
+.sort-columns {
+  display: flex;
+  gap: 12px;
+}
+
+.sort-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sort-column-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--mocha);
+}
+
+.sort-column-drop {
+  flex: 1;
+  min-height: 90px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  cursor: pointer;
+}
+
+.sort-column-empty {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.sort-explanations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sort-explanation-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ---------- Practice: two_step ---------- */
+
+.combo-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.combo-plus {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--gold-ink);
+}
+
+.tense-slot {
+  flex: 1 1 84px;
+  min-height: 44px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px dashed var(--slot-dash);
+  border-radius: var(--r-control);
+  background: var(--card);
+  color: var(--gold-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.combo-slot-filled {
+  flex: 1 1 84px;
+  min-height: 44px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1.5px solid var(--gold);
+  border-radius: var(--r-control);
+  background: var(--champagne);
+  color: var(--mocha-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.combo-slot-filled.correct {
+  border-color: var(--correct);
+  background: var(--correct-bg);
+  color: var(--correct-ink);
+}
+
+.combo-slot-filled.wrong {
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
+  color: var(--wrong-ink);
+}
+
+.combo-mark {
+  font-weight: 800;
+}
+
+.chip-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-chip {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--mocha-ink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.option-chip.selected {
+  border-color: var(--gold);
+  background: var(--champagne);
+}
+
+.option-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.step1-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--correct-bg);
+  border: 1px solid var(--correct-line);
+  border-radius: var(--r-control);
+}
+
+.step1-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.step1-summary-label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--correct-ink);
+}
+
+.step1-summary-link {
+  min-height: 32px;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold-ink);
+  cursor: pointer;
+}
+
+.step1-summary-combo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--correct-ink);
 }
