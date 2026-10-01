@@ -2,7 +2,6 @@ import TextBlock from './blocks/TextBlock.jsx'
 import SectionBlock from './blocks/SectionBlock.jsx'
 import FunfactBlock from './blocks/FunfactBlock.jsx'
 import QuestionCard from './blocks/ItemBlock.jsx'
-import Notice from './components/Notice.jsx'
 
 export default function MaterialPage({
   material,
@@ -10,13 +9,6 @@ export default function MaterialPage({
   onBack,
   nextStep,
   onOpenMaterial,
-  onGoToStagePractice,
-  correct,
-  onAnswerPick,
-  allStagesDone,
-  stageNote,
-  notice,
-  onDismissNotice,
 }) {
   const position = stageMaterials.findIndex((m) => m.material_id === material.material_id) + 1
 
@@ -56,10 +48,6 @@ export default function MaterialPage({
               <QuestionCard
                 key={`${material.material_id}:${block.item.id}`}
                 item={block.item}
-                alreadyCorrect={Boolean(correct[`${material.material_id}:${block.item.id}`])}
-                onPick={(choiceKey, isCorrect) =>
-                  onAnswerPick(material.material_id, block.item.id, choiceKey, isCorrect)
-                }
               />
             )
           default:
@@ -67,44 +55,22 @@ export default function MaterialPage({
         }
       })}
 
-      <Notice notice={notice} onDismiss={onDismissNotice} />
-
-      {/* Every question in this stage is answered, but the practice that opens the next stage
-          is not finished yet, so say which one is now the way forward. */}
-      {stageNote && <p className="stage-note">{stageNote}</p>}
-
-      {/* The last material of the last stage has nothing after it, so there is no next step to
-          name and no button is rendered. Once every stage is done the finished state takes its
-          place. On the last material of a stage that has practice, the next step is that
-          stage's practice rather than the next stage's first material. */}
-      {nextStep ? (
-        nextStep.kind === 'practice' ? (
-          <>
-            <p className="stage-note">Bước tiếp theo: luyện tập giai đoạn {nextStep.stage}</p>
-            <div className="btn-row">
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={() => onGoToStagePractice(nextStep.stage)}
-              >
-                Sang phần luyện tập
-              </button>
-            </div>
-          </>
+      {/* After the last material of all, the button goes back to the stage list. */}
+      <div className="btn-row">
+        {nextStep.kind === 'material' ? (
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => onOpenMaterial(nextStep.material)}
+          >
+            Bước tiếp theo: {nextStep.material.title_vi}
+          </button>
         ) : (
-          <div className="btn-row">
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={() => onOpenMaterial(nextStep.material)}
-            >
-              Bước tiếp theo: {nextStep.material.title_vi}
-            </button>
-          </div>
-        )
-      ) : (
-        allStagesDone && <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
-      )}
+          <button type="button" className="btn-primary" onClick={onBack}>
+            Bước tiếp theo: về danh sách giai đoạn
+          </button>
+        )}
+      </div>
     </main>
   )
 }

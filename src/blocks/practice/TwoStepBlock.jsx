@@ -56,7 +56,7 @@ function OptionChipRow({ label, options, value, onPick, disabled }) {
   )
 }
 
-export default function TwoStepBlock({ item, onNext, onAnswer }) {
+export default function TwoStepBlock({ item, onNext }) {
   const { step1, step2 } = item
   const [values, setValues] = useState({ tense: null, aspect: null, voice: null })
   const [step1Status, setStep1Status] = useState('building') // building | correct | wrong
@@ -75,7 +75,6 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
   function checkStep1() {
     const isCorrect = SLOT_KEYS.every((k) => values[k] === step1.answer[k])
     setStep1Status(isCorrect ? 'correct' : 'wrong')
-    onAnswer?.(isCorrect)
   }
 
   function retryStep1() {
@@ -118,7 +117,6 @@ export default function TwoStepBlock({ item, onNext, onAnswer }) {
     const built = buildSentence(placed2.map((c) => c.text))
     const isCorrect = built === step2.answer
     setStep2Status(isCorrect ? 'correct' : 'wrong')
-    onAnswer?.(isCorrect)
   }
 
   function retryStep2() {

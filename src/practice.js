@@ -7,3 +7,7 @@ export const practiceSets = Object.values(practiceModules)
     const [bStage, bPart] = b.practice_id.split('.').map(Number)
     return aStage - bStage || aPart - bPart
   })
+
+export function practiceSetsForStage(stage) {
+  return practiceSets.filter((p) => p.stage === stage)
+}

@@ -32,7 +32,7 @@ function AnswerOption({ option, state, onPick }) {
 }
 
 // Điền vào chỗ trống: the English sentence with "___" sits in an ivory box above the choices.
-export default function BlankBlock({ item, onNext, onAnswer }) {
+export default function BlankBlock({ item, onNext }) {
   const [status, setStatus] = useState('unanswered')
   const [chosenKey, setChosenKey] = useState(null)
 
@@ -42,7 +42,6 @@ export default function BlankBlock({ item, onNext, onAnswer }) {
     const isCorrect = key === item.answer
     setChosenKey(key)
     setStatus(isCorrect ? 'correct' : 'wrong')
-    onAnswer?.(isCorrect)
   }
 
   function retry() {

@@ -35,7 +35,7 @@ function AnswerOption({ option, state, onPick }) {
 
 // Shared by mcq and blank: both are a single-tap, auto-graded choice among options, checked the
 // moment the learner taps one, same as the in-material question.
-export default function ChoiceBlock({ label, prompt, options, answerKey, ruleVi, onNext, onAnswer }) {
+export default function ChoiceBlock({ label, prompt, options, answerKey, ruleVi, onNext }) {
   const [status, setStatus] = useState('unanswered')
   const [chosenKey, setChosenKey] = useState(null)
 
@@ -45,7 +45,6 @@ export default function ChoiceBlock({ label, prompt, options, answerKey, ruleVi,
     const isCorrect = key === answerKey
     setChosenKey(key)
     setStatus(isCorrect ? 'correct' : 'wrong')
-    onAnswer?.(isCorrect)
   }
 
   function retry() {

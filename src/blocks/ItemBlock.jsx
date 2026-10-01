@@ -82,7 +82,7 @@ function CorrectionReveal({ chosenOption, rule, onRetry }) {
   )
 }
 
-export default function QuestionCard({ item, alreadyCorrect, onPick }) {
+export default function QuestionCard({ item }) {
   const [status, setStatus] = useState('unanswered')
   const [chosenKey, setChosenKey] = useState(null)
   const [retried, setRetried] = useState(false)
@@ -99,9 +99,7 @@ export default function QuestionCard({ item, alreadyCorrect, onPick }) {
 
   function pick(key) {
     setChosenKey(key)
-    const isCorrect = key === item.answer
-    setStatus(isCorrect ? 'correct' : 'wrong')
-    onPick(key, isCorrect)
+    setStatus(key === item.answer ? 'correct' : 'wrong')
   }
 
   function retry() {
@@ -151,13 +149,6 @@ export default function QuestionCard({ item, alreadyCorrect, onPick }) {
           <CorrectionReveal chosenOption={chosenOption} rule={item.rule_vi} onRetry={retry} />
         )}
       </div>
-
-      {alreadyCorrect && (
-        <p className="already-correct">
-          <CheckCircle size={16} />
-          <span>Đã làm đúng</span>
-        </p>
-      )}
     </div>
   )
 }

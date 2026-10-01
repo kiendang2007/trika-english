@@ -1,7 +1,7 @@
 import ChoiceBlock from './ChoiceBlock.jsx'
 import { QuotedBold } from '../../components/RichText.jsx'
 
-export default function McqBlock({ item, onNext, onAnswer }) {
+export default function McqBlock({ item, onNext }) {
   return (
     <ChoiceBlock
       label="Trắc nghiệm"
@@ -10,7 +10,6 @@ export default function McqBlock({ item, onNext, onAnswer }) {
       answerKey={item.answer}
       ruleVi={item.rule_vi}
       onNext={onNext}
-      onAnswer={onAnswer}
     />
   )
 }
