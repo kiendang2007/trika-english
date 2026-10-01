@@ -116,14 +116,6 @@ button:not(:disabled):active {
   min-width: 0;
 }
 
-.stamp {
-  margin: auto 0 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
 h1,
 h2,
 p {
@@ -241,21 +233,6 @@ strong {
   cursor: not-allowed;
 }
 
-.btn-secondary {
-  border: 1.5px solid var(--mocha);
-  background: var(--card);
-  color: var(--mocha);
-}
-
-.btn-small {
-  align-self: flex-start;
-  width: auto;
-  min-height: 44px;
-  padding: 12px 20px;
-  font-size: 15px;
-  line-height: 1.2;
-}
-
 .btn-row {
   padding: 16px 0;
 }
@@ -295,47 +272,6 @@ strong {
   gap: 8px;
 }
 
-.field label {
-  font-weight: 700;
-  font-size: 17px;
-  line-height: 1.4;
-  color: var(--mocha);
-}
-
-.field input,
-.field select {
-  width: 100%;
-  min-height: 52px;
-  padding: 16px;
-  border: 1.5px solid var(--line);
-  border-radius: var(--r-control);
-  background: var(--card);
-  color: var(--mocha-ink);
-  font-size: 17px;
-  line-height: 1.4;
-}
-
-.field select {
-  padding-right: 44px;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5l4 4 4-4' fill='none' stroke='%235B4636' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  text-overflow: ellipsis;
-}
-
-.field input:focus,
-.field select:focus {
-  border-color: var(--gold);
-  outline: var(--focus-ring);
-  outline-offset: 0;
-}
-
-.field input::placeholder {
-  color: var(--muted);
-}
-
 .hint {
   margin: 0;
   font-size: 15px;
@@ -354,17 +290,12 @@ strong {
   line-height: 1.4;
 }
 
-.pill-done {
-  background: var(--sand);
-  color: var(--mocha);
-}
-
 .pill-current {
   background: var(--champagne);
   color: var(--gold-ink-on-champagne);
 }
 
-.pill-locked {
+.pill-muted {
   background: var(--locked-badge);
   color: var(--locked-ink);
 }
@@ -377,14 +308,6 @@ strong {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-}
-
-.learner-name {
-  font-weight: 800;
-  font-size: 19px;
-  line-height: 1.3;
-  color: var(--mocha);
-  overflow-wrap: anywhere;
 }
 
 /* ---------- Notices (locked-section modal) ---------- */
@@ -400,26 +323,6 @@ strong {
   z-index: 1000;
 }
 
-.modal-card {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 360px;
-  padding: 20px;
-  background: var(--card);
-  border: 1px solid var(--champagne-line);
-  border-radius: var(--r-card);
-  box-shadow: var(--shadow-raised);
-}
-
-.modal-card p {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--mocha-ink);
-}
-
 .all-done {
   margin: 0;
   padding: 16px;
@@ -430,19 +333,6 @@ strong {
   line-height: 1.6;
   font-weight: 700;
   color: var(--mocha);
-}
-
-/* The line at the foot of a material once its stage's questions are done and only the
-   practice is left. Quieter than .all-done: it points forward, it does not celebrate. */
-.stage-note {
-  margin: 0;
-  padding: 14px 16px;
-  background: var(--sand);
-  border: 1px solid var(--sand-line);
-  border-radius: var(--r-control);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--mocha-ink);
 }
 
 /* ---------- Name screen ---------- */
@@ -495,10 +385,6 @@ strong {
   background: repeating-linear-gradient(var(--locked-line) 0 6px, transparent 6px 14px);
 }
 
-.trail-line.solid {
-  background: var(--mocha);
-}
-
 .stage-row .trail-line {
   flex: 1;
   min-height: 16px;
@@ -512,14 +398,6 @@ strong {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.trail-marker.done {
-  background: var(--mocha);
-  box-shadow: var(--shadow-raised);
-}
-
-.trail-marker.current {
   background: var(--gold);
   border: 3px solid #ffffff;
   box-shadow: var(--shadow-raised);
@@ -527,11 +405,6 @@ strong {
   font-size: 19px;
   line-height: 1;
   color: var(--mocha-ink);
-}
-
-.trail-marker.locked {
-  background: var(--locked-bg);
-  border: 1.5px dashed var(--locked-line);
 }
 
 .stage-card {
@@ -542,29 +415,6 @@ strong {
   border: 1px solid var(--line);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-card);
-}
-
-.stage-card.current {
-  border: 1.5px solid #76591f33;
-}
-
-.stage-card.locked {
-  background: var(--locked-bg);
-  border: 1px dashed var(--locked-line);
-  box-shadow: none;
-}
-
-.stage-card.highlight {
-  animation: stage-card-highlight 2s ease-out;
-}
-
-@keyframes stage-card-highlight {
-  0% {
-    box-shadow: 0 0 0 3px var(--gold);
-  }
-  100% {
-    box-shadow: var(--shadow-card);
-  }
 }
 
 .stage-card-head {
@@ -582,10 +432,6 @@ strong {
   font-size: 19px;
   line-height: 1.3;
   color: var(--mocha);
-}
-
-.stage-card.locked .stage-title {
-  color: var(--locked-ink);
 }
 
 .material-list {
@@ -618,31 +464,12 @@ strong {
   text-underline-offset: 3px;
 }
 
-.stage-card.locked .material-link {
-  color: var(--locked-ink);
-}
-
 /* Lock icon, drawn in CSS to match the design */
 .lock-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
   color: var(--muted);
-}
-
-.lock-icon .shackle {
-  width: 9px;
-  height: 6px;
-  border: 1.5px solid currentColor;
-  border-bottom: none;
-  border-radius: 5px 5px 0 0;
-}
-
-.lock-icon .body {
-  width: 13px;
-  height: 10px;
-  border-radius: 2.5px;
-  background: currentColor;
 }
 
 /* ---------- Material page ---------- */
@@ -1027,50 +854,12 @@ button.option:hover {
   }
 }
 
-.already-correct {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 0 4px;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
 /* ---------- Teacher screen ---------- */
 
 .teacher-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.teacher-link {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  box-shadow: var(--shadow-card);
-}
-
-.teacher-link-text {
-  margin: 0;
-  padding: 12px 16px;
-  background: var(--pale);
-  border-radius: var(--r-control);
-  font-size: 15px;
-  line-height: 1.6;
-  word-break: break-all;
-  user-select: all;
-}
-
-.teacher-link-text:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
 }
 
 /* ---------- Practice: shared chrome ---------- */
@@ -1090,27 +879,6 @@ button.option:hover {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--gold-ink);
-}
-
-.material-link.locked-item {
-  color: var(--locked-ink);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.lock-icon-inline {
-  flex: none;
-}
-
-.lock-icon-inline .shackle {
-  width: 7px;
-  height: 5px;
-}
-
-.lock-icon-inline .body {
-  width: 10px;
-  height: 8px;
 }
 
 .step-dots {

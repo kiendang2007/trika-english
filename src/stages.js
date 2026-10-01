@@ -14,10 +14,3 @@ function lastStage(list) {
 }
 
 export const STAGE_COUNT = lastStage(materials)
-
-// The stages a learner can be on, 1 to STAGE_COUNT. `current_stage` never leaves this range:
-// there is no stage after the last one, so finishing it advances nothing.
-export function clampToStages(stage) {
-  if (typeof stage !== 'number' || !Number.isFinite(stage)) return 1
-  return Math.min(Math.max(Math.round(stage), 1), STAGE_COUNT)
-}

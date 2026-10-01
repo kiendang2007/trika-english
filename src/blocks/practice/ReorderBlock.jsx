@@ -79,7 +79,7 @@ function OrderChip({ chip, state, onClick, draggable, isDragging, onDragStart, o
 
 // Sắp xếp: pool chips move onto the answer line, in order, either by tapping them or by
 // dragging them; a placed chip returns to the pool by tapping it or dragging it back down.
-export default function ReorderBlock({ item, onNext, onAnswer }) {
+export default function ReorderBlock({ item, onNext }) {
   const allChips = item.chips.map((text, i) => ({ id: i, text }))
   const [placedIds, setPlacedIds] = useState([])
   const [status, setStatus] = useState('building')
@@ -150,7 +150,6 @@ export default function ReorderBlock({ item, onNext, onAnswer }) {
     const built = buildSentence(placed.map((c) => c.text))
     const isCorrect = built === item.answer
     setStatus(isCorrect ? 'correct' : 'wrong')
-    onAnswer?.(isCorrect)
   }
 
   function retry() {

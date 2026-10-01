@@ -4,7 +4,7 @@ import { CheckCircle, CrossCircle } from '../../components/Icons.jsx'
 
 // Xếp vào hai nhóm: tap a chip in the pool then tap a column to place it, or drag a chip
 // directly onto a column. A placed chip is tapped or dragged back to the pool the same way.
-export default function SortTwoBlock({ item, onNext, onAnswer }) {
+export default function SortTwoBlock({ item, onNext }) {
   const chips = item.chips.map((c, i) => ({ id: i, word: c.word, group: c.group }))
   const [placement, setPlacement] = useState({}) // id -> 'left' | 'right'
   const [selectedId, setSelectedId] = useState(null)
@@ -63,9 +63,7 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
   }
 
   function check() {
-    const allCorrect = chips.every((c) => placement[c.id] === c.group)
     setChecked(true)
-    onAnswer?.(allCorrect)
   }
 
   function retry() {

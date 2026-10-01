@@ -1,19 +1,4 @@
-// The only icons in the product: check, cross, lock. Each means one specific thing.
-
-export function CheckStroke({ size = 22, color = '#FFFFFF', width = 2.4 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 18 18" aria-hidden="true">
-      <path
-        d="M4.4 9.4l3 3 6.2-6.2"
-        fill="none"
-        stroke={color}
-        strokeWidth={width}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
+// The only icons in the product: check circle, cross circle, outline lock. Each means one specific thing.
 
 export function CheckCircle({ size = 18 }) {
   return (
@@ -43,15 +28,6 @@ export function CrossCircle({ size = 18 }) {
         strokeLinecap="round"
       />
     </svg>
-  )
-}
-
-export function LockIcon() {
-  return (
-    <span className="lock-icon" aria-hidden="true">
-      <span className="shackle" />
-      <span className="body" />
-    </span>
   )
 }
 
