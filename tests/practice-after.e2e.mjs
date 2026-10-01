@@ -23,7 +23,7 @@ const audit = (page) => page.evaluate((SEL) => {
 }, SEL)
 function rng(seed) { return () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296 }
 let total = 0
-for (const w of [360, 375, 414, 768, 1280]) {
+for (const w of (process.env.WIDTHS || '360,375,414,768,1280').split(',').map(Number)) {
   const page = await (await browser.newContext({ viewport: { width: w, height: 812 } })).newPage()
   await page.goto(BASE)
   const toList = async () => { await page.locator('.top-bar-menu button').click(); await page.locator('.menu-item', { hasText: 'Ngữ pháp' }).click() }

@@ -1250,8 +1250,8 @@ button.option:hover {
 }
 
 .step1-summary-link {
-  min-height: 32px;
-  padding: 0 4px;
+  min-height: 44px;
+  padding: 0 8px;
   border: none;
   background: none;
   font-size: 14px;
