@@ -42,6 +42,16 @@ listening, speaking, a teacher dashboard, payment, marketing pages.
 
 The diagnostic was cut on 16 September. The **route** survives; the **test** does not.
 
+**Site frame, added 1 October.** A fixed top bar on every screen: the logo (goes home), four
+subject tabs (Ngữ pháp, Phát âm, Từ vựng, IELTS) and a menu button that drops the same four
+subjects down under the bar. The site opens on a home page: a landing screen, then a sentence
+whose ending turns fifteen loose words into a tree of ngữ pháp, phát âm and từ vựng, a
+"Học ngữ pháp ngay" button and a footer with the build timestamp. Links from a teacher
+(`?gd`, `?hv`, `?giao-vien`) still skip the home page. Ngữ pháp leads to the placement screen,
+or to the stage list once a name is saved on the device. Phát âm, Từ vựng and IELTS each open
+one shared page that says the subject is not in this version and links back to Ngữ pháp. That
+page is the only trace of those subjects: no content, no sign up, no countdown.
+
 ## 3. The eleven stages
 
 Sequence set by the teacher on 16 September, revised 18 September. Stages 12 to 15 of the

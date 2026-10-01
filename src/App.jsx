@@ -4,6 +4,9 @@ import ListScreen from './screens/ListScreen.jsx'
 import TeacherScreen from './screens/TeacherScreen.jsx'
 import MaterialPage from './MaterialPage.jsx'
 import PracticePage from './PracticePage.jsx'
+import TopBar from './components/topbar/TopBar.jsx'
+import HomeOpening from './screens/home/HomeOpening.jsx'
+import LockedSubjectPage from './screens/LockedSubjectPage.jsx'
 import { materials } from './content.js'
 import { practiceSets } from './practice.js'
 import { loadLastName, saveLastName, hasProgress, loadProgress, saveProgress } from './learner.js'
@@ -31,13 +34,30 @@ import { log, setLogContext } from './log.js'
 
 const BUILD_TIME = __BUILD_TIME__
 
+// dd/mm/yyyy hh:mm in Vietnam time, as printed in the home page footer.
 function formatBuildTime(iso) {
   try {
-    return new Date(iso).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+    const parts = Object.fromEntries(
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      })
+        .formatToParts(new Date(iso))
+        .map((p) => [p.type, p.value])
+    )
+    return `${parts.day}/${parts.month}/${parts.year} ${parts.hour}:${parts.minute}`
   } catch {
     return iso
   }
 }
+
+// Screens that belong to Ngữ pháp, for the active tab in the top bar.
+const GRAMMAR_SCREENS = ['name', 'list', 'material', 'practice']
 
 // What "Bước tiếp theo" points to from a material. On any material but the last of its stage,
 // this is always the next material in the same stage. On the last material of a stage that has
@@ -83,7 +103,8 @@ export function nextPracticeStepFor(practiceSet) {
 
 export default function App() {
   const [learner, setLearner] = useState(null)
-  const [screen, setScreen] = useState('name')
+  const [screen, setScreen] = useState('home')
+  const [lockedSubject, setLockedSubject] = useState(null)
   const [currentMaterialId, setCurrentMaterialId] = useState(null)
   const [currentPracticeId, setCurrentPracticeId] = useState(null)
   const [lockMessage, setLockMessage] = useState(null)
@@ -133,7 +154,6 @@ export default function App() {
       // too, without waiting on the learner to answer something first.
       saveProgress(lastName, progress)
       setLearner({ name: lastName, ...progress })
-      setScreen('list')
       setLogContext(lastName, progress.current_stage)
       log('open')
     }
@@ -150,6 +170,30 @@ export default function App() {
     setScreen('list')
     setLogContext(trimmed, progress.current_stage)
     log('open')
+  }
+
+  // Ngữ pháp, from the top bar, the menu, "Học ngữ pháp ngay" and "Về Ngữ pháp": the stage list
+  // for a learner already named on this device, the name screen otherwise.
+  function goToGrammar() {
+    setLockMessage(null)
+    setHighlightStage(null)
+    setScreen(learner ? 'list' : 'name')
+  }
+
+  function goHome() {
+    setLockMessage(null)
+    setHighlightStage(null)
+    setScreen('home')
+  }
+
+  function openSubject(key) {
+    if (key === 'grammar') {
+      goToGrammar()
+      return
+    }
+    setLockMessage(null)
+    setLockedSubject(key)
+    setScreen('locked')
   }
 
   function handleSwitchLearner() {
@@ -274,7 +318,7 @@ export default function App() {
     // first would only be undone a moment later.
     if (screen === 'list' && highlightStage) return
     window.scrollTo(0, 0)
-  }, [screen, currentMaterialId, currentPracticeId, highlightStage])
+  }, [screen, lockedSubject, currentMaterialId, currentPracticeId, highlightStage])
 
   const currentMaterial = materials.find((m) => m.material_id === currentMaterialId)
   const currentPracticeSet = practiceSets.find((p) => p.practice_id === currentPracticeId)
@@ -302,55 +346,67 @@ export default function App() {
     return stageOpenedMessage(set.stage)
   }
 
+  const activeSubject =
+    screen === 'locked' ? lockedSubject : GRAMMAR_SCREENS.includes(screen) ? 'grammar' : ''
+
   return (
-    <div className="page">
-      {screen === 'teacher' && <TeacherScreen materials={materials} />}
-      {screen === 'name' && <NameScreen onStart={handleStart} />}
-      {screen === 'list' && learner && (
-        <ListScreen
-          learner={learner}
-          materials={materials}
-          practiceSets={practiceSets}
-          onOpenMaterial={openMaterial}
-          onOpenPractice={openPractice}
-          onSwitchLearner={handleSwitchLearner}
-          notice={lockMessage}
-          onDismissNotice={() => setLockMessage(null)}
-          highlightStage={highlightStage}
-          onHighlightDone={() => setHighlightStage(null)}
-        />
+    <>
+      <TopBar active={activeSubject} onHome={goHome} onSubject={openSubject} />
+      {screen === 'home' && (
+        <HomeOpening buildTime={formatBuildTime(BUILD_TIME)} onLearnGrammar={goToGrammar} />
       )}
-      {screen === 'material' && learner && currentMaterial && (
-        <MaterialPage
-          key={currentMaterial.material_id}
-          material={currentMaterial}
-          stageMaterials={materials.filter((m) => m.stage === currentMaterial.stage)}
-          onBack={backToList}
-          nextStep={nextStepFor(currentMaterial)}
-          onOpenMaterial={openMaterial}
-          onGoToStagePractice={goToStagePractice}
-          correct={learner.correct}
-          onAnswerPick={handleAnswerPick}
-          allStagesDone={isEverythingComplete(learner.correct, learner.practice)}
-          stageNote={stageNoteFor(currentMaterial)}
-          notice={lockMessage}
-          onDismissNotice={() => setLockMessage(null)}
-        />
+      {screen === 'locked' && <LockedSubjectPage subject={lockedSubject} onBack={goToGrammar} />}
+      {screen !== 'home' && screen !== 'locked' && (
+        <div className="page">
+          {screen === 'teacher' && <TeacherScreen materials={materials} />}
+          {screen === 'name' && <NameScreen onStart={handleStart} />}
+          {screen === 'list' && learner && (
+            <ListScreen
+              learner={learner}
+              materials={materials}
+              practiceSets={practiceSets}
+              onOpenMaterial={openMaterial}
+              onOpenPractice={openPractice}
+              onSwitchLearner={handleSwitchLearner}
+              notice={lockMessage}
+              onDismissNotice={() => setLockMessage(null)}
+              highlightStage={highlightStage}
+              onHighlightDone={() => setHighlightStage(null)}
+            />
+          )}
+          {screen === 'material' && learner && currentMaterial && (
+            <MaterialPage
+              key={currentMaterial.material_id}
+              material={currentMaterial}
+              stageMaterials={materials.filter((m) => m.stage === currentMaterial.stage)}
+              onBack={backToList}
+              nextStep={nextStepFor(currentMaterial)}
+              onOpenMaterial={openMaterial}
+              onGoToStagePractice={goToStagePractice}
+              correct={learner.correct}
+              onAnswerPick={handleAnswerPick}
+              allStagesDone={isEverythingComplete(learner.correct, learner.practice)}
+              stageNote={stageNoteFor(currentMaterial)}
+              notice={lockMessage}
+              onDismissNotice={() => setLockMessage(null)}
+            />
+          )}
+          {screen === 'practice' && learner && currentPracticeSet && (
+            <PracticePage
+              key={currentPracticeSet.practice_id}
+              practiceSet={currentPracticeSet}
+              onBack={backToList}
+              onItemDone={handlePracticeItemDone}
+              finishedNote={practiceNoteFor(currentPracticeSet)}
+              nextStep={nextPracticeStepFor(currentPracticeSet)}
+              onOpenPractice={openPractice}
+              onOpenMaterial={openMaterial}
+              notice={lockMessage}
+              onDismissNotice={() => setLockMessage(null)}
+            />
+          )}
+        </div>
       )}
-      {screen === 'practice' && learner && currentPracticeSet && (
-        <PracticePage
-          key={currentPracticeSet.practice_id}
-          practiceSet={currentPracticeSet}
-          onBack={backToList}
-          onItemDone={handlePracticeItemDone}
-          finishedNote={practiceNoteFor(currentPracticeSet)}
-          nextStep={nextPracticeStepFor(currentPracticeSet)}
-          onOpenPractice={openPractice}
-          onOpenMaterial={openMaterial}
-          notice={lockMessage}
-          onDismissNotice={() => setLockMessage(null)}
-        />
-      )}
-    </div>
+    </>
   )
 }
