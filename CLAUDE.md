@@ -18,7 +18,7 @@ a time. Built for a university course, due 5 October 2026.
 
 - React with Vite, **plain JavaScript, no TypeScript**. No router: one page, a `screen` value in
   state, screens chosen with a switch.
-- No backend, no database, no login, no runtime API call except the one logging POST in SPEC 13.
+- No backend, no database, no login, no runtime API call.
 - Load content with `import.meta.glob('/content/materials/*.json', { eager: true })` and sort by
   `material_id`. Never copy content into components.
 - **Never edit anything in `content/` on your own initiative.** It is authored elsewhere
@@ -31,11 +31,8 @@ a time. Built for a university course, due 5 October 2026.
 - No em dashes and no en dashes anywhere in user-facing text.
 - Mobile first. It must work on a 5 inch phone over mobile data. Wide tables scroll sideways
   inside their own box; the page never scrolls sideways.
-- Wrap every `localStorage` read and write in try/catch, and render correctly when it is empty.
-  Keys are prefixed `trika:` (renamed from `commbat:` on 24 September, before any real learner
-  had used the site, so no migration exists or is needed). This prefix is fixed since 25
-  September: changing it now would wipe every learner's saved progress.
-- Locked stages stay visible and clickable, and say which stage comes first. Never hide them.
+- Store nothing and collect nothing about the learner: no localStorage, sessionStorage, cookies or network request about them.
+- Every stage of Ngữ pháp is open. Phát âm, Từ vựng and IELTS show a locked page that says Chưa có.
 - Never add scoring, levels, CEFR bands, or anything SPEC section 14 forbids.
 
 ## Working style
