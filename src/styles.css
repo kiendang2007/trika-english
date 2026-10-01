@@ -430,6 +430,19 @@ strong {
   color: var(--mocha);
 }
 
+/* The line at the foot of a material once its stage's questions are done and only the
+   practice is left. Quieter than .all-done: it points forward, it does not celebrate. */
+.stage-note {
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--sand);
+  border: 1px solid var(--sand-line);
+  border-radius: var(--r-control);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--mocha-ink);
+}
+
 /* ---------- Name screen ---------- */
 
 .page > main.name-screen {
@@ -537,6 +550,19 @@ strong {
   background: var(--locked-bg);
   border: 1px dashed var(--locked-line);
   box-shadow: none;
+}
+
+.stage-card.highlight {
+  animation: stage-card-highlight 2s ease-out;
+}
+
+@keyframes stage-card-highlight {
+  0% {
+    box-shadow: 0 0 0 3px var(--gold);
+  }
+  100% {
+    box-shadow: var(--shadow-card);
+  }
 }
 
 .stage-card-head {
@@ -1145,6 +1171,37 @@ button.option:hover {
 .warning-glyph {
   flex: none;
   font-weight: 800;
+}
+
+/* The three buttons on the screen after the last item: Làm lại, Về danh sách, and (everywhere
+   but the very last practice of the route) the button that moves on. One column instead of the
+   two-in-a-row that used to overlap, capped at a comfortable width and centered so it does not
+   stretch edge to edge on a wide screen. */
+.practice-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 20rem;
+  margin: 0 auto;
+  padding: 16px 0;
+}
+
+/* Làm lại and Về danh sách carry their own colour classes (btn-retry, btn-primary) for looks
+   only; every dimension for a button on this screen lives here, in one place, so the two cannot
+   drift apart again. min-height, not height, so a longer label on the third button ("Phần luyện
+   tập tiếp theo", "Học giai đoạn 11") is free to wrap to a second line without shrinking below
+   the touch target, while Làm lại and Về danh sách, which never wrap, stay at that same height. */
+.practice-end .btn-retry,
+.practice-end .btn-primary {
+  width: 100%;
+  min-height: 52px;
+  padding: 16px 20px;
+  font-size: 17px;
+  line-height: 1.35;
+  border-radius: var(--r-control);
+  text-align: center;
 }
 
 /* ---------- Practice: chips ---------- */

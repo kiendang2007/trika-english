@@ -1,5 +1,11 @@
-import { isMaterialComplete, isStageComplete } from '../progress.js'
-import { STAGE_COUNT, FINISHED_STAGE } from '../stages.js'
+import { useEffect, useRef } from 'react'
+import {
+  isEverythingComplete,
+  isMaterialComplete,
+  isPracticeComplete,
+  isStageComplete,
+} from '../progress.js'
+import { STAGE_COUNT } from '../stages.js'
 import Notice from '../components/Notice.jsx'
 import { CheckStroke, LockIcon } from '../components/Icons.jsx'
 
@@ -12,9 +18,15 @@ function LockedInlineIcon() {
   )
 }
 
-function statusFor(stage, currentStage) {
-  if (stage < currentStage) return 'done'
-  if (stage === currentStage) return 'current'
+// The last stage has no stage after it, so a learner who finishes it stays on it. Completion,
+// not a stage number the learner has moved past, is what marks a stage done. A stage the learner
+// has already passed stays done whatever the current rule says, so nobody who moved on under the
+// old rule sees their stages turn incomplete.
+function statusFor(stage, learner) {
+  if (stage < learner.current_stage || isStageComplete(stage, learner.correct, learner.practice)) {
+    return 'done'
+  }
+  if (stage === learner.current_stage) return 'current'
   return 'locked'
 }
 
@@ -30,10 +42,22 @@ function StageMarker({ stage, status }) {
   )
 }
 
-function StageCard({ stage, status, materials, correct, onOpenMaterial, practiceSets, onOpenPractice }) {
-  const practiceUnlocked = isStageComplete(stage, correct)
+function StageCard({
+  stage,
+  status,
+  materials,
+  learner,
+  onOpenMaterial,
+  practiceSets,
+  onOpenPractice,
+  highlighted,
+  cardRef,
+}) {
+  const { correct } = learner
+  // Practice opens with its stage, not after it: finishing the practice is what finishes it.
+  const practiceUnlocked = stage <= learner.current_stage
   return (
-    <div className={`stage-card ${status}`}>
+    <div ref={cardRef} className={`stage-card ${status}${highlighted ? ' highlight' : ''}`}>
       <div className="stage-card-head">
         <h2 className="stage-title">Giai đoạn {stage}</h2>
         <span className={`pill pill-${status}`}>{STATUS_LABEL[status]}</span>
@@ -62,6 +86,7 @@ function StageCard({ stage, status, materials, correct, onOpenMaterial, practice
                 >
                   {!practiceUnlocked && <LockedInlineIcon />}
                   {p.title_vi}
+                  {isPracticeComplete(p, learner.practice) ? ' ✓' : ''}
                 </button>
               </li>
             ))}
@@ -81,6 +106,8 @@ export default function ListScreen({
   onSwitchLearner,
   notice,
   onDismissNotice,
+  highlightStage,
+  onHighlightDone,
 }) {
   const stages = []
   for (let stage = 1; stage <= STAGE_COUNT; stage++) {
@@ -92,6 +119,17 @@ export default function ListScreen({
     })
   }
 
+  const highlightedCardRef = useRef(null)
+
+  // Arriving from "Sang phần luyện tập": jump to the stage's card and let it glow briefly, the
+  // same way the learner would find it by scrolling, then let the highlight fade on its own.
+  useEffect(() => {
+    if (!highlightStage) return
+    highlightedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const timer = setTimeout(() => onHighlightDone?.(), 2000)
+    return () => clearTimeout(timer)
+  }, [highlightStage, onHighlightDone])
+
   return (
     <main>
       <div className="screen-header">
@@ -101,12 +139,12 @@ export default function ListScreen({
         </button>
       </div>
       <Notice notice={notice} onDismiss={onDismissNotice} />
-      {learner.current_stage >= FINISHED_STAGE && (
+      {isEverythingComplete(learner.correct, learner.practice) && (
         <p className="all-done">Đã học xong tất cả các giai đoạn.</p>
       )}
       <ol className="stage-trail">
         {stages.map(({ stage, materials: stageMaterials }) => {
-          const status = statusFor(stage, learner.current_stage)
+          const status = statusFor(stage, learner)
           const solid = status === 'done'
           return (
             <li key={stage}>
@@ -119,10 +157,12 @@ export default function ListScreen({
                   stage={stage}
                   status={status}
                   materials={stageMaterials}
-                  correct={learner.correct}
+                  learner={learner}
                   onOpenMaterial={onOpenMaterial}
                   practiceSets={practiceSets.filter((p) => p.stage === stage)}
                   onOpenPractice={onOpenPractice}
+                  highlighted={stage === highlightStage}
+                  cardRef={stage === highlightStage ? highlightedCardRef : null}
                 />
               </div>
             </li>

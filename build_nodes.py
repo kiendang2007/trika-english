@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Build nodes.json for the diagnostic tree. Single source of truth: this file."""
-import json, sys
+"""Build content/nodes.json for the diagnostic tree. Single source of truth: this file."""
+import glob, json, os, sys
 from collections import OrderedDict
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+CONTENT = os.path.join(ROOT, "content")
 
 N = []
 
@@ -429,12 +432,34 @@ EXCLUDE = {
     "W1.6",   # danh từ chỉ người / chỉ vật: cut from v1 by the teacher, 24 Sep
 }
 
-# A subtree pulled out of its parent's stage and taught later, on purpose. A later STAGES
-# entry wins, and listing it here is what makes that deliberate rather than accidental.
-# Teacher's call, 18 September: telling "I" from "me" needs subject and object, which only
-# exist once C5 is taught, so the pronouns move behind the clause.
+# Where a node sits now, against where it sat before, for every node that was deliberately
+# moved or deliberately kept. (was, now). Two kinds of entry live here:
+#
+#   1. A subtree pulled out of its parent's stage and taught later. A later STAGES entry wins
+#      over an earlier one, and listing it here is what makes that deliberate rather than
+#      accidental: an overlap that is not declared fails the build.
+#   2. The nine nodes of materials 12 to 16, merged into stage 11 on 28 September when the
+#      fifteen-stage sequence became eleven. Stages 12 to 15 no longer exist. Y1, M1.3 and
+#      M1.4 were already stage 11 and did not move; they are listed so the whole of the last
+#      stage is declared in one place.
+#
+# Every entry is checked against the stage the build actually produces, so a STAGES edit that
+# moves one of these nodes somewhere else fails instead of going unnoticed.
 REASSIGNED = {
-    "W1.5": (1, 5),  # was inside stage 1 via W1, now its own stage 5
+    # 1. Teacher's call, 18 September: telling "I" from "me" needs subject and object, which
+    #    only exist once C5 is taught, so the pronouns move behind the clause.
+    "W1.5": (1, 5),   # was inside stage 1 via W1, now its own stage 5
+    # 2. Teacher's call, 28 September: tense, aspect, the passive, the whole grid and the
+    #    irregular verbs are taught as one last stage.
+    "Y1":   (11, 11),  # material 12, already the last stage before the merge
+    "M1.4": (11, 11),  # material 12
+    "M1.3": (11, 11),  # material 12
+    "Y2":   (12, 11),  # material 13
+    "M1.5": (12, 11),  # material 13
+    "M1.6": (12, 11),  # material 13
+    "Y3":   (13, 11),  # material 14
+    "Y13":  (14, 11),  # material 15
+    "W2.5": (15, 11),  # material 16
 }
 
 byid_pre = {x["id"]: x for x in N}
@@ -463,6 +488,17 @@ for nid, frm, to in reassignments:
         root = byid_pre[root]["parent"]
     if root is None or REASSIGNED[root] != (frm, to):
         print(f"FAIL undeclared stage reassignment: {nid} moved from stage {frm} to {to}",
+              file=sys.stderr)
+        sys.exit(1)
+
+# And every declaration must still describe where the node ends up. This is what keeps the
+# merge into stage 11 from being quietly undone by a STAGES edit.
+for nid, (frm, to) in REASSIGNED.items():
+    if nid not in byid_pre:
+        print(f"FAIL REASSIGNED names {nid}, which is not a node", file=sys.stderr)
+        sys.exit(1)
+    if STAGE_OF.get(nid) != to:
+        print(f"FAIL {nid} is declared at stage {to} but STAGES puts it at {STAGE_OF.get(nid)}",
               file=sys.stderr)
         sys.exit(1)
 
@@ -511,18 +547,50 @@ def is_ancestor(maybe, node):
     return maybe in ("W", "C", "M", "Y", "P", "S", "T", "F", "K", "L", "X", "PH", "OR")
 
 
+# Which material teaches each node, read from the material files. A stage can hold several
+# materials and those materials are still in order, so "same stage" is not a free pass: the
+# material teaching a node must not come before the material teaching what it requires.
+MATERIAL_OF, MATERIAL_STAGE = {}, {}
+material_files = sorted(glob.glob(os.path.join(CONTENT, "materials", "*.json")))
+if not material_files:
+    errs.append(f"no material files under {os.path.join(CONTENT, 'materials')}, "
+                "so material order cannot be checked")
+for path in material_files:
+    with open(path, encoding="utf-8") as f:
+        mat = json.load(f)
+    mid = mat["material_id"]
+    MATERIAL_STAGE[mid] = mat["stage"]
+    taught = list(mat.get("nodes", []))
+    taught += [b["node"] for b in mat["blocks"] if b.get("node")]
+    for nid in taught:
+        if MATERIAL_OF.get(nid, mid) != mid:
+            errs.append(f"node {nid} is taught in materials {MATERIAL_OF[nid]} and {mid}")
+        MATERIAL_OF.setdefault(nid, mid)
+
+# STAGES and the material files must agree about which stage a material is in.
+for mid, declared in sorted(MATERIAL_STAGE.items()):
+    built = {STAGE_OF[n] for n, m in MATERIAL_OF.items() if m == mid and n in STAGE_OF}
+    if built and built != {declared}:
+        errs.append(f"material {mid} says stage {declared} but its nodes build to {sorted(built)}")
+
 # a node must never be taught before something it requires
 for cid, st in STAGE_OF.items():
     for r in byid[cid]["requires"]:
-        if r in STAGE_OF and STAGE_OF[r] > st:
-            errs.append(f"stage order: {cid} (stage {st}) comes before its prerequisite {r} (stage {STAGE_OF[r]})")
-        if r not in STAGE_OF and r not in EXCLUDE and not is_ancestor(r, cid):
+        if r in STAGE_OF:
+            if STAGE_OF[r] > st:
+                errs.append(f"stage order: {cid} (stage {st}) comes before its prerequisite {r} (stage {STAGE_OF[r]})")
+            elif STAGE_OF[r] == st:
+                here, there = MATERIAL_OF.get(cid), MATERIAL_OF.get(r)
+                if here is not None and there is not None and here < there:
+                    errs.append(f"material order: {cid} (material {here}) comes before its "
+                                f"prerequisite {r} (material {there}), both in stage {st}")
+        elif r not in EXCLUDE and not is_ancestor(r, cid):
             errs.append(f"missing prerequisite: {cid} (stage {st}) requires {r} which is not taught in v1")
 
 if errs:
     print("VALIDATION FAILED"); [print("  " + e) for e in errs]; sys.exit(1)
 
-with open("/home/claude/nodes.json", "w", encoding="utf-8") as f:
+with open(os.path.join(CONTENT, "nodes.json"), "w", encoding="utf-8") as f:
     json.dump(N, f, ensure_ascii=False, indent=2)
 
 by_axis, by_teach = {}, {}
@@ -535,6 +603,10 @@ print("  by teach: " + ", ".join(f"{k} {v}" for k, v in sorted(by_teach.items())
 print(f"  in_v1: {sum(1 for x in N if x['in_v1'])} nodes across {len(STAGES)} stages")
 for idx, ids in enumerate(STAGES, start=1):
     members = sorted([k for k, v in STAGE_OF.items() if v == idx])
-    print(f"   {idx:>2}. {' + '.join(ids):<22} {len(members):>2} node(s)")
+    mats = sorted({MATERIAL_OF[m] for m in members if m in MATERIAL_OF})
+    shown = ' + '.join(ids)
+    if len(shown) > 22: shown = shown[:19] + "..."
+    print(f"   {idx:>2}. {shown:<22} {len(members):>2} node(s)  "
+          f"material(s) {', '.join(str(m) for m in mats)}")
 print(f"  with old_id:  {sum(1 for x in N if x['old_id'])}")
 print(f"  roots: {[x['id'] for x in N if x['parent'] is None]}")

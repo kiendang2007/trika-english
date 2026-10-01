@@ -1,8 +1,7 @@
 # Mười sáu material và mười một stage
 
-Cập nhật 28/09. Sinh ra từ `materials/*.json`, không sửa tay file này. Bản trong project này đã
-được sửa tay để khớp với việc gộp stage 12 đến 15 vào stage 11 (D26); bản trong repo cần được
-sinh lại từ các file JSON.
+Cập nhật 28/09. Sinh ra từ `content/materials/*.json` và `content/nodes.json`
+bằng `build_danh_sach.py`, không sửa tay file này.
 
 | # | Material | Stage | Số câu | Tag L1 | Câu hỏi còn mở |
 |---:|---|---:|---:|---|---:|

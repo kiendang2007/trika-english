@@ -66,5 +66,50 @@ lại. Không chấm điểm, không đếm số câu đúng, không hiện tỉ
 
 ## Gating
 
-Phần luyện tập của một giai đoạn mở khi giai đoạn đó đã xong. Luyện tập không bao giờ chặn giai
-đoạn sau. Làm xong luyện tập không đổi `current_stage`.
+Chốt ngày 28/09, thay quy tắc cũ ở D25.
+
+Phần luyện tập của một giai đoạn mở cùng lúc với giai đoạn đó. Giai đoạn nào người học mở được
+thì mọi phần luyện tập của giai đoạn đó cũng mở được, không cần làm xong câu hỏi trong bài trước.
+Luyện tập của một giai đoạn chưa mở thì vẫn hiện ra và vẫn bấm được, kèm lời từ chối như cũ.
+
+Làm xong tất cả các phần luyện tập của một giai đoạn là điều kiện để mở giai đoạn sau. Câu hỏi
+trong bài không còn quyết định việc này. Một phần luyện tập xong khi mọi câu trong đó đã được trả
+lời đúng ít nhất một lần. Kết quả lưu theo từng câu, nên bấm "Làm lại" không xoá gì.
+
+Giai đoạn nào không có file luyện tập nào thì giữ quy tắc cũ: các bài học của giai đoạn đó quyết
+định. Hiện tại cả mười một giai đoạn đều có luyện tập. Danh sách này đọc từ `content/practice/`,
+không ghi cứng trong code.
+
+`current_stage` chỉ tăng một bậc khi giai đoạn vừa xong đúng bằng giai đoạn hiện tại. Nó không bao
+giờ giảm và không bao giờ vượt quá giai đoạn cuối. Làm lại luyện tập của một giai đoạn cũ không
+đổi gì. Giai đoạn 11 là giai đoạn cuối: xong phần luyện tập cuối của nó là hết lộ trình, và
+`current_stage` vẫn là 11.
+
+## Màn hình sau câu cuối
+
+Chốt ngày 28/09. Giống nhau ở cả sáu loại luyện tập.
+
+Ba nút xếp thành một cột, cách nhau 12px, căn giữa, rộng bằng nhau, cột rộng tối đa khoảng 20rem:
+
+1. **Làm lại**: làm lại từ câu đầu. Không xoá kết quả đã lưu theo từng câu (mục Gating ở trên),
+   nên phần luyện tập đã xong thì vẫn tính là xong dù người học làm lại bao nhiêu lần.
+2. **Về danh sách**: quay lại màn hình danh sách giai đoạn.
+3. Nút thứ ba, kiểu chính, dẫn sang bước tiếp theo:
+   - Còn phần luyện tập khác của giai đoạn này (xếp theo `practice_id`): "Phần luyện tập tiếp
+     theo", sang phần luyện tập đó.
+   - Đây là phần luyện tập cuối của giai đoạn (theo `practice_id`, bất kể các phần khác của giai
+     đoạn đã xong hay chưa): "Học giai đoạn N" (N lấy từ dữ liệu), sang bài đầu tiên của giai đoạn
+     N.
+   - Đây là phần luyện tập cuối của giai đoạn cuối (11.2): không có nút thứ ba, vì hết lộ trình.
+   - Đích của nút có thể chưa mở, ví dụ giai đoạn N chưa mở vì một phần luyện tập khác của giai
+     đoạn này chưa xong. Nút vẫn hiện, bấm vào vẫn hiện đúng lời từ chối như khi bấm vào một mục
+     đã khoá ở màn hình danh sách. Không ẩn nút và không lờ đi cú bấm.
+
+Nút 1 và nút 2 luôn cùng kích thước: cùng chiều rộng, cùng chiều cao tối thiểu (ít nhất 48px, đủ
+để bấm bằng ngón tay), cùng khoảng đệm, cỡ chữ và bo góc, lấy chung từ một nơi trong CSS. Nút thứ
+ba cùng kích thước và cùng khoảng cách với hai nút kia, chỉ khác màu (kiểu nút chính).
+
+Hoàn thành câu cuối vẫn chạy đúng logic mở khoá và thông báo ở mục Gating. Thông báo đó không che
+ba nút.
+
+Không có điểm số, không đếm số câu đúng trên màn hình này.

@@ -157,6 +157,9 @@ everything else follows from it.
 
 ## 7. Gating
 
+Changed 28 September: the practice sections of a stage, not its material questions, are what
+open the next stage. Practice used to open only after a stage was finished and to gate nothing.
+
 ```
 gating runs on STAGES, not on single nodes
 
@@ -165,10 +168,28 @@ for each stage 1..11:
     if stage ==  learner.current_stage   -> current, openable
     if stage  >  learner.current_stage   -> locked
 
-a stage is complete when every material in it is complete
 a material is complete when every item in it has been answered correctly at least once
-advancing: completing the current stage increments current_stage by one
+a practice section is complete when every item in it has been answered correctly at least
+    once. That is stored per item, so restarting a practice never clears it.
+
+a stage that has at least one practice section is complete when every practice section of
+    that stage is complete. Its material questions gate nothing.
+a stage with no practice section at all is complete when every material in it is complete,
+    which is the rule the whole product used before 28 September.
+
+advancing: completing the current stage increments current_stage by one, and only then.
+    current_stage never falls and never goes above the last stage. Finishing, or redoing,
+    a stage the learner has already passed changes nothing.
 ```
+
+A stage has practice when at least one file in `content/practice/` carries its stage number.
+Which stages those are is read from the files, never written down in the code.
+
+Everything inside a stage opens together. A practice section is openable exactly when its own
+stage is openable, not once the stage is finished, because finishing the practice is what
+finishes the stage. So a learner can leave a material question unanswered, finish the practice,
+and move on; and a learner who answers every material question but leaves one practice unfinished
+does not move on.
 
 A locked stage is clickable and shows why it is locked, naming the stage that comes first.
 **Do not hide locked steps and do not silently ignore the click.** The refusal is the product.
@@ -191,7 +212,11 @@ Nothing under a key that starts with `_` is ever rendered. `video_url` is null f
 in v1; when it is null, render nothing for it.
 
 At the bottom of the page, **Bước tiếp theo** names what comes next: the next material in the same
-stage, or the first material of the next stage.
+stage, or, on the last material of a stage, the first material of the next stage. If the last
+material's own stage has at least one practice section, the button goes to that stage's practice
+instead, since the practice is what actually opens the next stage: a line above it names the
+practice by stage number, and the button itself reads "Sang phần luyện tập". A stage with no
+practice section keeps going straight to the next stage's first material.
 
 ## 9. Practice and the five-step loop
 
