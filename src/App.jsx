@@ -5,33 +5,10 @@ import PracticePage from './PracticePage.jsx'
 import TopBar from './components/topbar/TopBar.jsx'
 import HomeOpening from './screens/home/HomeOpening.jsx'
 import LockedSubjectPage from './screens/LockedSubjectPage.jsx'
+import Footer from './components/Footer.jsx'
 import { materials } from './content.js'
 import { practiceSets, practiceSetsForStage } from './practice.js'
 import { STAGE_COUNT } from './stages.js'
-
-const BUILD_TIME = __BUILD_TIME__
-
-// dd/mm/yyyy hh:mm in Vietnam time, as printed in the home page footer.
-function formatBuildTime(iso) {
-  try {
-    const parts = Object.fromEntries(
-      new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Ho_Chi_Minh',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hourCycle: 'h23',
-      })
-        .formatToParts(new Date(iso))
-        .map((p) => [p.type, p.value])
-    )
-    return `${parts.day}/${parts.month}/${parts.year} ${parts.hour}:${parts.minute}`
-  } catch {
-    return iso
-  }
-}
 
 // Screens that belong to Ngữ pháp, for the active tab in the top bar.
 const GRAMMAR_SCREENS = ['list', 'material', 'practice']
@@ -113,7 +90,7 @@ export default function App() {
     <>
       <TopBar active={activeSubject} onHome={goHome} onSubject={openSubject} />
       {screen === 'home' && (
-        <HomeOpening buildTime={formatBuildTime(BUILD_TIME)} onLearnGrammar={goToGrammar} />
+        <HomeOpening onLearnGrammar={goToGrammar} />
       )}
       {screen === 'locked' && <LockedSubjectPage subject={lockedSubject} onBack={goToGrammar} />}
       {screen !== 'home' && screen !== 'locked' && (
@@ -148,6 +125,7 @@ export default function App() {
           )}
         </div>
       )}
+      <Footer />
     </>
   )
 }

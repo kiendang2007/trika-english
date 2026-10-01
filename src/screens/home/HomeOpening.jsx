@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import OpeningLanding from './OpeningLanding.jsx'
 import SystemSentence from './SystemSentence.jsx'
 import SystemDiagram from './SystemDiagram.jsx'
-import Footer from './Footer.jsx'
 import { EASE } from './systemLayout.js'
 
 const DURATION = 1000
@@ -39,7 +38,7 @@ function layoutFor(desk, content) {
 // every word, string and fade together. With reduced motion nothing travels: the diagram fades
 // out over 150ms, swaps to the tree and fades back in over 150ms, and the sentence ending
 // crossfades over 300ms.
-export default function HomeOpening({ buildTime, onLearnGrammar }) {
+export default function HomeOpening({ onLearnGrammar }) {
   const [progress, setProgress] = useState(0)
   const [fade, setFade] = useState(1)
   const [reduced, setReduced] = useState(prefersReducedMotion)
@@ -155,7 +154,6 @@ export default function HomeOpening({ buildTime, onLearnGrammar }) {
             </div>
           </div>
         </main>
-        <Footer buildTime={buildTime} />
       </section>
     </div>
   )
