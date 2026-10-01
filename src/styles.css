@@ -920,7 +920,9 @@ button.option:hover {
 .order-chip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  min-width: 44px;
   min-height: 44px;
   padding: 10px 16px;
   border-radius: var(--r-pill);
@@ -1035,6 +1037,7 @@ button.option:hover {
 }
 
 .token {
+  min-width: 44px;
   min-height: 44px;
   padding: 8px 12px;
   border-radius: var(--r-pill);
@@ -1302,6 +1305,7 @@ button.option:hover {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 44px;
   text-decoration: none;
   border-radius: 12px;
 }
@@ -1475,37 +1479,51 @@ button.option:hover {
   transform: rotate(-45deg);
 }
 
-/* The menu drops down under the bar, right aligned with the menu button. */
-.top-bar-panel {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  display: grid;
-  grid-template-rows: 0fr;
-  background: var(--ivory);
-  box-shadow: none;
-  border-bottom: 0;
-  visibility: hidden;
-  transition: grid-template-rows 0.28s ease, visibility 0s linear 0.28s;
-}
-
-.top-bar-panel.open {
-  grid-template-rows: 1fr;
-  box-shadow: 0 14px 28px rgba(46, 37, 30, 0.08);
-  border-bottom: 1px solid var(--line);
-  visibility: visible;
-  transition: grid-template-rows 0.28s ease, visibility 0s linear 0s;
-}
-
-.top-bar-panel-clip {
-  overflow: hidden;
-  min-height: 0;
-}
-
-.top-bar-panel-list {
+/* The menu: a modal dialog on document.body, a sibling of the top bar and of #root. It covers the
+   whole viewport above the bar (z-index 50) and all page content. */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--ivory);
+  animation: menu-fade 0.18s ease both;
+}
+
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.menu-overlay-row {
+  flex: none;
+  box-sizing: content-box;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: env(safe-area-inset-top, 0px) 44px 0;
+  background: var(--mocha);
+  border-bottom: 1px solid #4a382b;
+}
+
+.menu-overlay-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-overlay-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   max-width: 760px;
   margin-left: auto;
   padding: 12px 44px 28px;
@@ -1583,7 +1601,12 @@ button.option:hover {
     display: none;
   }
 
-  .top-bar-panel-list {
+  .menu-overlay-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .menu-overlay-list {
     max-width: none;
     padding: 8px 16px 20px;
   }
@@ -2029,4 +2052,14 @@ button.option:hover {
 .locked-subject-button:focus-visible {
   outline: 2px solid var(--gold-ink);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-overlay {
+    animation-duration: 0.01s;
+  }
+
+  .menu-button-lines > span {
+    transition: none;
+  }
 }
