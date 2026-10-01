@@ -9,6 +9,7 @@ export default function MaterialPage({
   onBack,
   nextStep,
   onOpenMaterial,
+  onOpenPractice,
 }) {
   const position = stageMaterials.findIndex((m) => m.material_id === material.material_id) + 1
 
@@ -55,9 +56,21 @@ export default function MaterialPage({
         }
       })}
 
-      {/* After the last material of all, the button goes back to the stage list. */}
+      {/* A stage with practice sends the learner there first; after the last material of all,
+          the button goes back to the stage list. */}
+      {nextStep.kind === 'practice' && (
+        <p className="stage-note">Bước tiếp theo: luyện tập giai đoạn {nextStep.stage}</p>
+      )}
       <div className="btn-row">
-        {nextStep.kind === 'material' ? (
+        {nextStep.kind === 'practice' ? (
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => onOpenPractice(nextStep.practice)}
+          >
+            Sang phần luyện tập
+          </button>
+        ) : nextStep.kind === 'material' ? (
           <button
             type="button"
             className="btn-primary"

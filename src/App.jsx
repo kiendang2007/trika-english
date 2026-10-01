@@ -13,9 +13,17 @@ import { STAGE_COUNT } from './stages.js'
 // Screens that belong to Ngữ pháp, for the active tab in the top bar.
 const GRAMMAR_SCREENS = ['list', 'material', 'practice']
 
-// What "Bước tiếp theo" points to from a material: the next material in the same stage, or the
-// first material of the next stage, or, after the last material of all, the stage list.
+// What "Bước tiếp theo" points to from a material: the next material in the same stage. On the
+// last material of a stage that has practice, the stage's first practice. Otherwise the first
+// material of the next stage, or, after the last material of all, the stage list.
 function nextStepFor(material) {
+  const isLastOfStage = !materials.some(
+    (m) => m.stage === material.stage && m.material_id > material.material_id,
+  )
+  const stagePractice = practiceSetsForStage(material.stage)
+  if (isLastOfStage && stagePractice.length > 0) {
+    return { kind: 'practice', stage: material.stage, practice: stagePractice[0] }
+  }
   const later = materials
     .filter(
       (m) =>
@@ -111,6 +119,7 @@ export default function App() {
               onBack={goToGrammar}
               nextStep={nextStepFor(currentMaterial)}
               onOpenMaterial={openMaterial}
+              onOpenPractice={openPractice}
             />
           )}
           {screen === 'practice' && currentPracticeSet && (
