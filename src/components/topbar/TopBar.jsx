@@ -31,12 +31,17 @@ export default function TopBar({ active, onHome, onSubject }) {
     root?.setAttribute('inert', '')
     const prevHtml = document.documentElement.style.overflow
     const prevBody = document.body.style.overflow
+    const prevPad = document.body.style.paddingRight
+    // Hiding the scrollbar widens the page, so pad by its width to keep the page where it is.
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth
     document.documentElement.style.overflow = 'hidden'
     document.body.style.overflow = 'hidden'
+    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`
     return () => {
       root?.removeAttribute('inert')
       document.documentElement.style.overflow = prevHtml
       document.body.style.overflow = prevBody
+      document.body.style.paddingRight = prevPad
     }
   }, [open])
 
