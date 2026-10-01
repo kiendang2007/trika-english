@@ -4,7 +4,7 @@ import PracticeFeedback from './PracticeFeedback.jsx'
 
 // Chọn từ: tap tokens in the sentence until exactly `count` are selected, then Kiểm tra.
 // A word can appear twice in the sentence; each position is tracked by index, not by text.
-export default function SelectWordsBlock({ item, onNext, onAnswer }) {
+export default function SelectWordsBlock({ item, onNext }) {
   const [selected, setSelected] = useState([])
   const [status, setStatus] = useState('building') // building | correct | wrong
 
@@ -26,7 +26,6 @@ export default function SelectWordsBlock({ item, onNext, onAnswer }) {
     const isCorrect =
       selectedSet.size === answerSet.size && [...answerSet].every((i) => selectedSet.has(i))
     setStatus(isCorrect ? 'correct' : 'wrong')
-    onAnswer?.(isCorrect)
   }
 
   function retry() {

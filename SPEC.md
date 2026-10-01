@@ -12,7 +12,7 @@ changes. The content lives in `content/materials/`, one JSON file per material.
 ## 1. The product
 
 **Trika English** teaches one path through English grammar, in eleven stages and sixteen
-materials, and will not let a learner skip a stage.
+materials.
 
 The claim the whole product rests on: **the auxiliary verb is the root**. Negation, yes/no
 questions, wh- questions, all twelve tense and aspect combinations, and the passive voice all
@@ -20,25 +20,21 @@ fall out of one rule about where the auxiliary goes and what form it selects. A 
 not got the auxiliary cannot be taught any of them, and most courses teach them as twelve
 unrelated topics.
 
-A learner arrives, is placed at a stage, and works forward. Stages ahead of them are visible and
-locked. Each material is an explanation with questions placed inside it, and a wrong answer opens
-the correction loop.
+A learner arrives at the home page and opens Ngữ pháp. Every stage is open. The stages are in a suggested order, from 1 to 11. Each material is an explanation with questions placed inside it, and a wrong answer opens the correction loop. The site stores nothing and collects nothing about the learner.
 
 Target learner: Vietnamese beginners, roughly A1 to A2, school age through university.
 Interface language: Vietnamese, everywhere, including error messages and button labels.
 
-**First audience is internal.** Six named students taught by the project owner. Not strangers,
-not a public launch. Individual learners come after that works, English teachers after that.
-
 ## 2. Scope
 
-**In:** the placement screen, the sixteen material pages grouped into eleven stages, gating,
-questions with the correction loop, progress that survives a refresh, logging to a Google Sheet.
+**In:** the home page (scroll-driven opening, the word diagram, the button "Học ngữ pháp ngay", footer), the top bar with four tabs (Ngữ pháp, Phát âm, Từ vựng, IELTS), the full-screen menu, locked pages for Phát âm, Từ vựng and IELTS, the sixteen material pages grouped into eleven stages, questions with the correction loop.
 
 **Out, and the code should contain no trace of these:** a diagnostic test, scoring, a CEFR
 estimate, a node map with red and amber, confidence buttons, user accounts, login, any runtime
 API call, any AI or speech processing, free-text grading, audio recording, vocabulary tools,
-listening, speaking, a teacher dashboard, payment, marketing pages.
+listening, speaking, a teacher dashboard, payment, marketing pages, learner names, placement,
+teacher link, stage gating, progress, localStorage, sessionStorage, cookies, logging, and any
+network request about the learner.
 
 The diagnostic was cut on 16 September. The **route** survives; the **test** does not.
 
@@ -46,9 +42,7 @@ The diagnostic was cut on 16 September. The **route** survives; the **test** doe
 subject tabs (Ngữ pháp, Phát âm, Từ vựng, IELTS) and a menu button that drops the same four
 subjects down under the bar. The site opens on a home page: a landing screen, then a sentence
 whose ending turns fifteen loose words into a tree of ngữ pháp, phát âm and từ vựng, a
-"Học ngữ pháp ngay" button and a footer with the build timestamp. Links from a teacher
-(`?gd`, `?hv`, `?giao-vien`) still skip the home page. Ngữ pháp leads to the placement screen,
-or to the stage list once a name is saved on the device. Phát âm, Từ vựng and IELTS each open
+"Học ngữ pháp ngay" button and a footer with the build timestamp. Ngữ pháp leads to the stage list, with every stage open. Phát âm, Từ vựng and IELTS each open
 one shared page that says the subject is not in this version and links back to Ngữ pháp. That
 page is the only trace of those subjects: no content, no sign up, no countdown.
 
@@ -110,8 +104,7 @@ arrives, so the grid needs no special pleading.
 the grid is formed with the modal `will`. Both are true and stage 7 is what makes them
 compatible: the learner meets `will` as an auxiliary, then uses it to express future.
 
-Every other node in `nodes.json` has `in_v1: false` and renders locked with a line saying this
-version does not cover it. They are not hidden: seeing the size of the tree is part of the point.
+Every other node in `nodes.json` has `in_v1: false` and is not part of this version.
 
 ## 4. Node tree
 
@@ -129,7 +122,7 @@ Three nodes are deliberately excluded from v1 even though their parent is in it:
 pronouns, which need relative clauses; `W1.4` collective nouns; and `W3.2` plain adjectives. The
 last two were cut by the teacher.
 
-`requires` is what makes gating work and is not derivable from any grammar reference. It was
+`requires` fixes the suggested order of stages and does not block anything. It is not derivable from any grammar reference. It was
 stated by the teacher.
 
 ## 5. Vietnamese L1 interference tags
@@ -152,57 +145,11 @@ Carried on items, used in correction cards to name the Vietnamese-specific cause
 
 ## 6. Placement
 
-One screen, shown once, before any lesson.
-
-**Teacher mode.** The owner picks a starting stage for a named student from a dropdown of the
-eleven. This is the path used for the six internal students, and it is honest: in v1 the teacher
-is the placement.
-
-**Self mode.** The learner is shown the eleven stages as plain statements and ticks the ones
-they are sure they already know. The starting stage is the first unticked one. No scoring, no
-diagnosis text, no result screen.
-
-Whichever mode, the outcome is a single integer: the learner's current stage. Store it, and
-everything else follows from it.
+Removed 1 October, see D27.
 
 ## 7. Gating
 
-Changed 28 September: the practice sections of a stage, not its material questions, are what
-open the next stage. Practice used to open only after a stage was finished and to gate nothing.
-
-```
-gating runs on STAGES, not on single nodes
-
-for each stage 1..11:
-    if stage  <  learner.current_stage   -> done, openable, marked complete
-    if stage ==  learner.current_stage   -> current, openable
-    if stage  >  learner.current_stage   -> locked
-
-a material is complete when every item in it has been answered correctly at least once
-a practice section is complete when every item in it has been answered correctly at least
-    once. That is stored per item, so restarting a practice never clears it.
-
-a stage that has at least one practice section is complete when every practice section of
-    that stage is complete. Its material questions gate nothing.
-a stage with no practice section at all is complete when every material in it is complete,
-    which is the rule the whole product used before 28 September.
-
-advancing: completing the current stage increments current_stage by one, and only then.
-    current_stage never falls and never goes above the last stage. Finishing, or redoing,
-    a stage the learner has already passed changes nothing.
-```
-
-A stage has practice when at least one file in `content/practice/` carries its stage number.
-Which stages those are is read from the files, never written down in the code.
-
-Everything inside a stage opens together. A practice section is openable exactly when its own
-stage is openable, not once the stage is finished, because finishing the practice is what
-finishes the stage. So a learner can leave a material question unanswered, finish the practice,
-and move on; and a learner who answers every material question but leaves one practice unfinished
-does not move on.
-
-A locked stage is clickable and shows why it is locked, naming the stage that comes first.
-**Do not hide locked steps and do not silently ignore the click.** The refusal is the product.
+Removed 1 October, see D27.
 
 ## 8. Material page
 
@@ -324,10 +271,7 @@ All content is JSON in the repository. Nobody needs a database to change a quest
 - React with Vite, **plain JavaScript, no TypeScript**.
 - **No router.** One page, a `step` value in state, screens rendered by switch.
 - No backend, no database, no login, no runtime API call.
-- Progress in `localStorage`, keyed by a learner name typed at placement. Wrap every read and
-  write in try/catch and render correctly when it comes back empty.
-- Logging: one `POST` to a Google Apps Script web app appending a row to a Google Sheet. No keys
-  in the client. A failed log never breaks the lesson.
+- Nothing is stored and no request is made about the learner. The only network requests are the page, its scripts, styles and fonts.
 - GitHub `kiendang2007/commbat-english`, Vercel deploying from `main` on every push.
 
 Must work on a 5 inch phone over mobile data. The build timestamp stays printed on screen until
@@ -335,8 +279,6 @@ submission.
 
 ## 14. What the build must never do
 
-- Hide a locked stage, or ignore a click on one. The refusal, with its reason, is the product.
 - Score the learner, estimate a level, or produce anything resembling a CEFR band.
-- Advance a learner past a stage whose `requires` are not all done.
 - Ship an `mcq` option whose only meaning is "wrong".
 - Show an English explanation to a learner.

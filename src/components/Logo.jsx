@@ -42,15 +42,3 @@ export function LogoMark({ size = 58, reversed = false }) {
     </div>
   )
 }
-
-export function LogoLockup({ size = 72 }) {
-  return (
-    <div className="logo-lockup">
-      <LogoMark size={size} />
-      <div className="logo-wordmark">
-        <span className="logo-trika">Trika</span>
-        <span className="logo-english">ENGLISH</span>
-      </div>
-    </div>
-  )
-}

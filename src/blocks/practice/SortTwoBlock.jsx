@@ -4,15 +4,15 @@ import { CheckCircle, CrossCircle } from '../../components/Icons.jsx'
 
 // Xếp vào hai nhóm: tap a chip in the pool then tap a column to place it, or drag a chip
 // directly onto a column. A placed chip is tapped or dragged back to the pool the same way.
-export default function SortTwoBlock({ item, onNext, onAnswer }) {
+export default function SortTwoBlock({ item, onNext }) {
   const chips = item.chips.map((c, i) => ({ id: i, word: c.word, group: c.group }))
-  const [placement, setPlacement] = useState({}) // id -> 'left' | 'right'
+  const [columnOf, setColumnOf] = useState({}) // id -> 'left' | 'right'
   const [selectedId, setSelectedId] = useState(null)
   const [checked, setChecked] = useState(false)
 
-  const pool = chips.filter((c) => placement[c.id] === undefined)
-  const leftChips = chips.filter((c) => placement[c.id] === 'left')
-  const rightChips = chips.filter((c) => placement[c.id] === 'right')
+  const pool = chips.filter((c) => columnOf[c.id] === undefined)
+  const leftChips = chips.filter((c) => columnOf[c.id] === 'left')
+  const rightChips = chips.filter((c) => columnOf[c.id] === 'right')
   const allPlaced = pool.length === 0
 
   function pickFromPool(id) {
@@ -22,7 +22,7 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
 
   function placeChip(id, column) {
     if (checked || id === null || id === undefined) return
-    setPlacement({ ...placement, [id]: column })
+    setColumnOf({ ...columnOf, [id]: column })
     setSelectedId(null)
   }
 
@@ -32,9 +32,9 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
 
   function returnToPool(id) {
     if (checked) return
-    const next = { ...placement }
+    const next = { ...columnOf }
     delete next[id]
-    setPlacement(next)
+    setColumnOf(next)
   }
 
   function dragStart(e, id) {
@@ -63,22 +63,21 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
   }
 
   function check() {
-    const allCorrect = chips.every((c) => placement[c.id] === c.group)
+    const allCorrect = chips.every((c) => columnOf[c.id] === c.group)
     setChecked(true)
-    onAnswer?.(allCorrect)
   }
 
   function retry() {
-    setPlacement({})
+    setColumnOf({})
     setSelectedId(null)
     setChecked(false)
   }
 
-  const allCorrect = checked && chips.every((c) => placement[c.id] === c.group)
+  const allCorrect = checked && chips.every((c) => columnOf[c.id] === c.group)
 
   function chipClass(c) {
     if (!checked) return `order-chip${selectedId === c.id ? ' selected' : ''}`
-    return placement[c.id] === c.group ? 'order-chip correct' : 'order-chip wrong'
+    return columnOf[c.id] === c.group ? 'order-chip correct' : 'order-chip wrong'
   }
 
   function Column({ label, group, list }) {
@@ -177,7 +176,7 @@ export default function SortTwoBlock({ item, onNext, onAnswer }) {
           </div>
           <div className="sort-explanations">
             {explanationOrder.map(({ word, text_vi, chip }) => {
-              const isCorrect = placement[chip.id] === chip.group
+              const isCorrect = columnOf[chip.id] === chip.group
               return (
                 <p key={word} className="sort-explanation-line">
                   {isCorrect ? <CheckCircle size={16} /> : <CrossCircle size={16} />}
