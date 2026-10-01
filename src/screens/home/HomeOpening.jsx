@@ -3,11 +3,11 @@ import OpeningLanding from './OpeningLanding.jsx'
 import SystemSentence from './SystemSentence.jsx'
 import SystemDiagram from './SystemDiagram.jsx'
 import Footer from './Footer.jsx'
-import { EASE, STAGE_WIDTH } from './systemLayout.js'
+import { EASE } from './systemLayout.js'
 
 const DURATION = 1000
-// From 1024px the wide diagram fills the content box, up to the 1184px it was drawn for. Under
-// that, the narrow three column layout is drawn at min(content, 560).
+// From 1024px the wide diagram fills the whole content box, however wide. Under that, the
+// narrow three column layout is drawn at min(content, 560).
 const DESK_MIN = 1024
 const NARROW_MAX = 560
 
@@ -30,8 +30,8 @@ function isDesk() {
 
 function layoutFor(desk, content) {
   const mode = desk ? 'wide' : 'narrow'
-  const cap = mode === 'wide' ? STAGE_WIDTH.wide : NARROW_MAX
-  return { mode, width: Math.round(Math.min(content, cap) * 100) / 100 }
+  const width = mode === 'wide' ? content : Math.min(content, NARROW_MAX)
+  return { mode, width: Math.round(width * 100) / 100 }
 }
 
 // The home page: the landing screen, then the sentence whose ending turns the loose hanging
@@ -44,7 +44,7 @@ export default function HomeOpening({ buildTime, onLearnGrammar }) {
   const [fade, setFade] = useState(1)
   const [reduced, setReduced] = useState(prefersReducedMotion)
   const [layout, setLayout] = useState(() =>
-    layoutFor(isDesk(), Math.min(window.innerWidth - 96, STAGE_WIDTH.wide))
+    layoutFor(isDesk(), window.innerWidth - 96)
   )
   const systemRef = useRef(null)
   const mainRef = useRef(null)
