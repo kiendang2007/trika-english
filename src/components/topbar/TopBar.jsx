@@ -11,18 +11,51 @@ import MenuButton from './MenuButton.jsx'
 export default function TopBar({ active, onHome, onSubject }) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef(null)
+  const panelRef = useRef(null)
+
+  function menuButton() {
+    return rootRef.current?.querySelector('.top-bar-menu button')
+  }
+
+  // While the menu is open, Tab and Shift+Tab cycle through the menu button and the four items.
+  function trapList() {
+    const items = panelRef.current ? [...panelRef.current.querySelectorAll('.menu-item')] : []
+    return [menuButton(), ...items].filter(Boolean)
+  }
+
+  function close(refocus) {
+    setOpen(false)
+    if (refocus) menuButton()?.focus()
+  }
 
   useEffect(() => {
     if (!open) return
+    const frame = requestAnimationFrame(() => trapList()[1]?.focus())
     function onKey(event) {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        close(true)
+        return
+      }
+      if (event.key !== 'Tab') return
+      const list = trapList()
+      if (!list.length) return
+      const i = list.indexOf(document.activeElement)
+      if (event.shiftKey && i <= 0) {
+        event.preventDefault()
+        list[list.length - 1].focus()
+      } else if (!event.shiftKey && (i === -1 || i === list.length - 1)) {
+        event.preventDefault()
+        list[0].focus()
+      }
     }
     function onDown(event) {
-      if (rootRef.current && !rootRef.current.contains(event.target)) setOpen(false)
+      if (rootRef.current && !rootRef.current.contains(event.target)) close(false)
     }
     window.addEventListener('keydown', onKey)
     document.addEventListener('mousedown', onDown)
     return () => {
+      cancelAnimationFrame(frame)
       window.removeEventListener('keydown', onKey)
       document.removeEventListener('mousedown', onDown)
     }
@@ -34,9 +67,20 @@ export default function TopBar({ active, onHome, onSubject }) {
     onHome()
   }
 
-  function pick(key) {
+  function pickTab(key) {
     setOpen(false)
     onSubject(key)
+  }
+
+  // Choosing an item in the menu closes it and puts focus back on the menu button.
+  function pickItem(key) {
+    close(true)
+    onSubject(key)
+  }
+
+  function toggle() {
+    if (open) close(true)
+    else setOpen(true)
   }
 
   return (
@@ -56,17 +100,17 @@ export default function TopBar({ active, onHome, onSubject }) {
               label={s.label}
               locked={s.locked}
               active={s.key === active}
-              onClick={() => pick(s.key)}
+              onClick={() => pickTab(s.key)}
             />
           ))}
         </nav>
         <div className="top-bar-menu">
-          <MenuButton open={open} controls="top-bar-panel" onClick={() => setOpen((o) => !o)} />
+          <MenuButton open={open} controls="top-bar-panel" onClick={toggle} />
         </div>
       </header>
-      <div id="top-bar-panel" className={`top-bar-panel${open ? ' open' : ''}`}>
+      <div id="top-bar-panel" ref={panelRef} className={`top-bar-panel${open ? ' open' : ''}`}>
         <div className="top-bar-panel-clip">
-          <nav aria-label="Môn học" className="top-bar-panel-list">
+          <nav aria-label="Menu môn học" className="top-bar-panel-list">
             {SUBJECTS.map((s) => {
               const on = s.key === active
               const state = on ? ' active' : s.locked ? ' locked' : ''
@@ -77,7 +121,7 @@ export default function TopBar({ active, onHome, onSubject }) {
                   className={`menu-item${state}`}
                   aria-current={on ? 'page' : undefined}
                   tabIndex={open ? 0 : -1}
-                  onClick={() => pick(s.key)}
+                  onClick={() => pickItem(s.key)}
                 >
                   <span className="menu-item-label">{s.label}</span>
                   {s.locked && (

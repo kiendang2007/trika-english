@@ -125,16 +125,22 @@ function segment(a, b, e) {
   }
 }
 
-// Everything the diagram draws at eased progress e, as React style objects.
-export function diagramAt(mode, e) {
+// Everything the diagram draws at eased progress e, as React style objects. `width` is the
+// width the stage is drawn at: only x positions scale to it, so word sizes never shrink.
+export function diagramAt(mode, e, width = STAGE_WIDTH[mode]) {
   const narrow = mode === 'narrow'
   const A = narrow ? NARROW_A : WIDE_A
   const B = narrow ? NARROW_B : WIDE_B
+  const k = width / STAGE_WIDTH[mode]
+  const X = (x) => x * k
   const words = []
   const strings = []
   for (const [id, label, narrowLabel] of WORDS) {
-    const [cx, top, off] = A[id]
-    const [bx, btop, bsize, head = 0, btx = -50] = B.n[id]
+    const [cxRaw, top, offRaw] = A[id]
+    const cx = X(cxRaw)
+    const off = X(offRaw)
+    const [bxRaw, btop, bsize, head = 0, btx = -50] = B.n[id]
+    const bx = X(bxRaw)
     const rotA = (Math.atan2(off, top) * 180) / Math.PI
     const size = lerp(B.sizeA, bsize, e)
     words.push({
@@ -151,18 +157,25 @@ export function diagramAt(mode, e) {
         textAlign: btx === 0 && e > 0.5 ? 'left' : 'center',
       },
     })
-    strings.push({ id, style: segment([cx + off, 0, cx, top, 1], B.s[id], e) })
+    const sb = B.s[id]
+    strings.push({ id, style: segment([cx + off, 0, cx, top, 1], [X(sb[0]), sb[1], X(sb[2]), sb[3], sb[4]], e) })
   }
   const t = B.trunk
   const sp = B.spine
-  strings.push({ id: 'trunk', style: segment([t[0], 0, t[0], 0, 0], t, e) })
-  strings.push({ id: 'spine', style: segment([sp[0], sp[1], sp[0], sp[1], 0], sp, e) })
+  strings.push({ id: 'trunk', style: segment([X(t[0]), 0, X(t[0]), 0, 0], [X(t[0]), t[1], X(t[2]), t[3]], e) })
+  strings.push({ id: 'spine', style: segment([X(sp[0]), sp[1], X(sp[0]), sp[1], 0], [X(sp[0]), sp[1], X(sp[2]), sp[3]], e) })
   const [bl, bt, bw, bh] = B.box
   return {
     height: Math.round(lerp(B.h[0], B.h[1], e)),
     words,
     strings,
-    dot: { left: B.dot[0] - 5, top: B.dot[1] - 5, opacity: r2(e) },
-    box: { left: bl, top: bt, width: bw, height: bh, opacity: r2(Math.max(0, (e - 0.4) / 0.6)) },
+    dot: { left: r2(X(B.dot[0]) - 5), top: B.dot[1] - 5, opacity: r2(e) },
+    box: {
+      left: r2(X(bl + bw / 2) - bw / 2),
+      top: bt,
+      width: bw,
+      height: bh,
+      opacity: r2(Math.max(0, (e - 0.4) / 0.6)),
+    },
   }
 }
