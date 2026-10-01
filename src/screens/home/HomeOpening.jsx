@@ -3,12 +3,13 @@ import OpeningLanding from './OpeningLanding.jsx'
 import SystemSentence from './SystemSentence.jsx'
 import SystemDiagram from './SystemDiagram.jsx'
 import Footer from './Footer.jsx'
-import { EASE, STAGE_WIDTH } from './systemLayout.js'
+import { EASE } from './systemLayout.js'
 
 const DURATION = 1000
-// The wide diagram is drawn for 1184px. Under this width it would shrink too far, so the
-// narrow three column layout takes over.
-const WIDE_MIN = 1000
+// From 1024px the wide diagram fills the whole content box, however wide. Under that, the
+// narrow three column layout is drawn at min(content, 560).
+const DESK_MIN = 1024
+const NARROW_MAX = 560
 
 function prefersReducedMotion() {
   try {
@@ -18,9 +19,19 @@ function prefersReducedMotion() {
   }
 }
 
-function layoutFor(width) {
-  const mode = width >= WIDE_MIN ? 'wide' : 'narrow'
-  return { mode, scale: Math.min(1, width / STAGE_WIDTH[mode]) }
+// Same test as the stylesheet's tiers, so the diagram and the padding switch together.
+function isDesk() {
+  try {
+    return window.matchMedia(`(min-width: ${DESK_MIN}px)`).matches
+  } catch {
+    return window.innerWidth >= DESK_MIN
+  }
+}
+
+function layoutFor(desk, content) {
+  const mode = desk ? 'wide' : 'narrow'
+  const width = mode === 'wide' ? content : Math.min(content, NARROW_MAX)
+  return { mode, width: Math.round(width * 100) / 100 }
 }
 
 // The home page: the landing screen, then the sentence whose ending turns the loose hanging
@@ -32,7 +43,9 @@ export default function HomeOpening({ buildTime, onLearnGrammar }) {
   const [progress, setProgress] = useState(0)
   const [fade, setFade] = useState(1)
   const [reduced, setReduced] = useState(prefersReducedMotion)
-  const [layout, setLayout] = useState(() => layoutFor(Math.min(window.innerWidth, 1280) - 96))
+  const [layout, setLayout] = useState(() =>
+    layoutFor(isDesk(), window.innerWidth - 96)
+  )
   const systemRef = useRef(null)
   const mainRef = useRef(null)
   const sentenceRef = useRef(null)
@@ -45,8 +58,8 @@ export default function HomeOpening({ buildTime, onLearnGrammar }) {
     const measure = () => {
       const cs = getComputedStyle(el)
       const inner = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
-      const next = layoutFor(inner)
-      setLayout((prev) => (prev.mode === next.mode && prev.scale === next.scale ? prev : next))
+      const next = layoutFor(isDesk(), inner)
+      setLayout((prev) => (prev.mode === next.mode && prev.width === next.width ? prev : next))
     }
     measure()
     if (!window.ResizeObserver) return
@@ -120,7 +133,7 @@ export default function HomeOpening({ buildTime, onLearnGrammar }) {
             eased={eased}
             fade={fade}
             reduced={reduced}
-            scale={layout.scale}
+            width={layout.width}
           />
           <div
             className="system-cta"

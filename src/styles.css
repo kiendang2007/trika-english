@@ -1937,6 +1937,7 @@ button.option:hover {
 
 .opening-title {
   margin: 0;
+  overflow-wrap: break-word;
   font-size: 60px;
   line-height: 1.15;
   font-weight: 800;
@@ -1970,6 +1971,10 @@ button.option:hover {
   background: #3f2f23;
 }
 
+.home-button:active {
+  transform: translateY(1px);
+}
+
 .home-button:focus-visible,
 .scroll-cue:focus-visible,
 .system-sentence-more:focus-visible {
@@ -1996,9 +2001,21 @@ button.option:hover {
 
 .scroll-cue:active {
   background: var(--sand);
+  transform: translateY(1px);
 }
 
-@media (max-width: 719.98px) {
+/* Home tiers: desk from 1024px (page padding 48), tab 600 to 1023 (32), mob under 600 (16). */
+@media (max-width: 1023.98px) {
+  .opening-landing {
+    padding: 48px 32px 96px;
+  }
+
+  .opening-title {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 599.98px) {
   .opening-landing {
     padding: 32px 16px 64px;
   }
@@ -2038,6 +2055,7 @@ button.option:hover {
 
 .system-sentence {
   margin: 0;
+  overflow-wrap: break-word;
   max-width: 880px;
   text-align: center;
   font-size: 32px;
@@ -2086,6 +2104,7 @@ button.option:hover {
 
 .system-sentence-more:active {
   background: var(--sand);
+  transform: translateY(1px);
 }
 
 .system-sentence-dots {
@@ -2102,17 +2121,10 @@ button.option:hover {
   color: var(--muted);
 }
 
-.system-diagram-frame {
+.system-diagram {
   position: relative;
   flex: none;
   margin-top: 32px;
-}
-
-.system-diagram {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: 0 0;
   pointer-events: none;
 }
 
@@ -2164,27 +2176,12 @@ button.option:hover {
   padding: 48px 4px 4px;
 }
 
-.system-section.narrow .system-sentence {
-  font-size: 24px;
-  line-height: 1.45;
-}
-
-.system-section.narrow .system-sentence-dots {
-  font-size: 24px;
-}
-
-.system-section.narrow .system-diagram-frame {
+.system-section.narrow .system-diagram {
   margin-top: 24px;
 }
 
 .system-section.narrow .system-cta-inner {
-  width: 100%;
-  max-width: 351px;
   padding-top: 32px;
-}
-
-.system-section.narrow .system-cta .home-button {
-  width: 100%;
 }
 
 .home-footer {
@@ -2196,9 +2193,46 @@ button.option:hover {
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 719.98px) {
+@media (max-width: 1023.98px) {
+  .system-main {
+    padding: 32px;
+  }
+
+  .system-sentence {
+    max-width: 640px;
+    font-size: 28px;
+  }
+
+  .system-sentence-dots {
+    font-size: 28px;
+  }
+
+  .home-footer {
+    padding: 24px 32px;
+  }
+}
+
+@media (max-width: 599.98px) {
   .system-main {
     padding: 32px 16px;
+  }
+
+  .system-sentence {
+    max-width: none;
+    font-size: 24px;
+    line-height: 1.45;
+  }
+
+  .system-sentence-dots {
+    font-size: 24px;
+  }
+
+  .system-cta-inner {
+    width: 100%;
+  }
+
+  .system-cta .home-button {
+    width: 100%;
   }
 
   .home-footer {
@@ -2277,6 +2311,7 @@ button.option:hover {
 .locked-subject-line {
   margin: 0;
   max-width: 30em;
+  text-wrap: pretty;
   font-size: clamp(17px, 1.5cqi, 19px);
   line-height: 1.6;
   color: var(--muted);
@@ -2298,6 +2333,10 @@ button.option:hover {
 
 .locked-subject-button:hover {
   background: #3f2f23;
+}
+
+.locked-subject-button:active {
+  transform: translateY(1px);
 }
 
 .locked-subject-button:focus-visible {
