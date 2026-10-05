@@ -5,7 +5,6 @@ import PracticePage from './PracticePage.jsx'
 import TopBar from './components/topbar/TopBar.jsx'
 import HomeOpening from './screens/home/HomeOpening.jsx'
 import LockedSubjectPage from './screens/LockedSubjectPage.jsx'
-import Footer from './components/Footer.jsx'
 import { materials } from './content.js'
 import { practiceSets, practiceSetsForStage } from './practice.js'
 import { STAGE_COUNT } from './stages.js'
@@ -134,7 +133,6 @@ export default function App() {
           )}
         </div>
       )}
-      <Footer />
     </>
   )
 }

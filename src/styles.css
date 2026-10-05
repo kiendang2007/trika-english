@@ -1745,7 +1745,7 @@ button.option:hover {
   }
 }
 
-/* ---------- Home: SystemSentence, HangingWords / SystemTree, Footer ---------- */
+/* ---------- Home: SystemSentence, HangingWords / SystemTree ---------- */
 
 .system-section {
   min-height: calc(100vh - var(--bar-h));
@@ -1894,15 +1894,6 @@ button.option:hover {
   padding-top: 32px;
 }
 
-.home-footer {
-  padding: 24px 48px;
-  border-top: 1px solid var(--line);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
 @media (max-width: 1023.98px) {
   .system-main {
     padding: 32px;
@@ -1917,9 +1908,6 @@ button.option:hover {
     font-size: 28px;
   }
 
-  .home-footer {
-    padding: 24px 32px;
-  }
 }
 
 @media (max-width: 599.98px) {
@@ -1945,9 +1933,6 @@ button.option:hover {
     width: 100%;
   }
 
-  .home-footer {
-    padding: 24px 16px;
-  }
 }
 
 /* ---------- LockedSubjectPage ---------- */

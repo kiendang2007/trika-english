@@ -33,6 +33,7 @@ a time. Built for a university course, due 5 October 2026.
   inside their own box; the page never scrolls sideways.
 - Store nothing and collect nothing about the learner: no localStorage, sessionStorage, cookies or network request about them.
 - Every stage of Ngữ pháp is open. Phát âm, Từ vựng and IELTS show a locked page that says Chưa có.
+- Never show the build date or time to the learner. It lives only in a data-build attribute on the app root.
 - Never add scoring, levels, CEFR bands, or anything SPEC section 14 forbids.
 
 ## Working style

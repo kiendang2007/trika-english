@@ -42,7 +42,7 @@ The diagnostic was cut on 16 September. The **route** survives; the **test** doe
 subject tabs (Ngữ pháp, Phát âm, Từ vựng, IELTS) and a menu button that drops the same four
 subjects down under the bar. The site opens on a home page: a landing screen, then a sentence
 whose ending turns fifteen loose words into a tree of ngữ pháp, phát âm and từ vựng, a
-"Học ngữ pháp ngay" button and a footer with the build timestamp. Ngữ pháp leads to the stage list, with every stage open. Phát âm, Từ vựng and IELTS each open
+"Học ngữ pháp ngay" button. Ngữ pháp leads to the stage list, with every stage open. Phát âm, Từ vựng and IELTS each open
 one shared page that says the subject is not in this version and links back to Ngữ pháp. That
 page is the only trace of those subjects: no content, no sign up, no countdown.
 
@@ -274,8 +274,7 @@ All content is JSON in the repository. Nobody needs a database to change a quest
 - Nothing is stored and no request is made about the learner. The only network requests are the page, its scripts, styles and fonts.
 - GitHub `kiendang2007/commbat-english`, Vercel deploying from `main` on every push.
 
-Must work on a 5 inch phone over mobile data. The build timestamp stays printed on screen until
-submission.
+Must work on a 5 inch phone over mobile data. The learner never sees the build date or time; it lives only in a data-build attribute on the app root.
 
 ## 14. What the build must never do
 
