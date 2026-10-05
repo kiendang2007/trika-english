@@ -1894,15 +1894,6 @@ button.option:hover {
   padding-top: 32px;
 }
 
-.home-footer {
-  padding: 24px 48px;
-  border-top: 1px solid var(--line);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
 @media (max-width: 1023.98px) {
   .system-main {
     padding: 32px;
@@ -1915,10 +1906,6 @@ button.option:hover {
 
   .system-sentence-dots {
     font-size: 28px;
-  }
-
-  .home-footer {
-    padding: 24px 32px;
   }
 }
 
@@ -1943,10 +1930,6 @@ button.option:hover {
 
   .system-cta .home-button {
     width: 100%;
-  }
-
-  .home-footer {
-    padding: 24px 16px;
   }
 }
 
@@ -2073,4 +2056,190 @@ button.option:hover {
   font-size: 16px;
   line-height: 1.6;
   color: var(--mocha-ink);
+}
+
+/* ---------- Footer ----------
+   Full-width Mocha đậm band, the last thing on every screen. The layout follows the footer's own
+   width: three columns from 900px, one column under that. Contrast on #2e251e: links #f8f6ef
+   13.9:1, champagne #eadcc8 11.1:1, grey #a49a8e 5.4:1, gold focus ring 7.3:1. */
+
+.site-footer {
+  container-type: inline-size;
+  background: var(--mocha-ink);
+  text-align: left;
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-home {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.footer-home:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.footer-home:active {
+  opacity: 0.85;
+}
+
+.footer-grid {
+  margin-top: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+.footer-heading {
+  margin: 0 0 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #8c7a6b;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--locked-mid);
+}
+
+.footer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.footer-list li {
+  display: block;
+}
+
+.footer-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ivory);
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.footer-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.footer-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.footer-link:active {
+  background: #3f2f23;
+  transform: translateY(1px);
+}
+
+.footer-link[aria-current='page'] .footer-subject {
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.footer-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--locked-mid);
+}
+
+.footer-stage,
+.footer-top {
+  font-weight: 700;
+}
+
+.footer-top {
+  gap: 8px;
+}
+
+.footer-about {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ivory);
+}
+
+.footer-bottom {
+  margin-top: 44px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mocha);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+}
+
+.footer-copy {
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 600;
+  color: var(--sand);
+}
+
+@container (min-width: 900px) {
+  .footer-inner {
+    padding: 48px 32px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 280px;
+    align-items: start;
+    gap: 48px;
+  }
+
+  .footer-stages {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    column-gap: 32px;
+  }
 }

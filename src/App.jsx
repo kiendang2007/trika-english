@@ -134,7 +134,13 @@ export default function App() {
           )}
         </div>
       )}
-      <Footer />
+      <Footer
+        active={activeSubject}
+        materials={materials}
+        onHome={goHome}
+        onSubject={openSubject}
+        onOpenMaterial={openMaterial}
+      />
     </>
   )
 }
