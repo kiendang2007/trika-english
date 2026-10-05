@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import OpeningLanding from './OpeningLanding.jsx'
 import SystemSentence from './SystemSentence.jsx'
 import SystemDiagram from './SystemDiagram.jsx'
+import Footer from '../../components/Footer.jsx'
 import { EASE } from './systemLayout.js'
 
 const DURATION = 1000
@@ -37,8 +38,8 @@ function layoutFor(desk, content) {
 // words into the system tree. Motion: one 1000ms clock on cubic-bezier(0.65, 0, 0.35, 1) drives
 // every word, string and fade together. With reduced motion nothing travels: the diagram fades
 // out over 150ms, swaps to the tree and fades back in over 150ms, and the sentence ending
-// crossfades over 300ms.
-export default function HomeOpening({ onLearnGrammar }) {
+// crossfades over 300ms. The footer is the last thing on the page, and only this screen has one.
+export default function HomeOpening({ materials, onLearnGrammar, onSubject, onOpenMaterial }) {
   const [progress, setProgress] = useState(0)
   const [fade, setFade] = useState(1)
   const [reduced, setReduced] = useState(prefersReducedMotion)
@@ -155,6 +156,7 @@ export default function HomeOpening({ onLearnGrammar }) {
           </div>
         </main>
       </section>
+      <Footer materials={materials} onSubject={onSubject} onOpenMaterial={onOpenMaterial} />
     </div>
   )
 }

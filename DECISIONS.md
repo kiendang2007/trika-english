@@ -542,3 +542,11 @@ Chốt ngày 01/10, sau khi Kiên thêm trang chủ, thanh trên cùng và menu 
 - **D19:** giữ nguyên. Vòng sửa lỗi bốn bước vẫn chạy trong trang và không cần lưu gì.
 
 **Cái gì sẽ đảo ngược quyết định này:** tài khoản học viên và giáo viên nối qua lớp học. Khi đó phải quyết định lại: có đăng nhập Google không, có học sinh lớp 6 dùng tài khoản Google không, và thu thập dữ liệu gì.
+
+## D29. The build date is hidden; only the home page has a footer
+
+05/10: the build date is hidden from learners; the home page has a full footer; other screens have none.
+
+The footer sits under "Học ngữ pháp ngay" as the last thing on the home page. It links to the four subjects and to every material, grouped by stage as in the stage list, and says the site stores and collects nothing about the learner. It replaces the earlier "small text only" footer with the build timestamp, which SPEC section 13 had required until submission.
+
+**What would reverse it:** a need to show which version is live on screen again (for example a grader or the teacher asking to see the build time), or other screens growing long enough that learners need links at the bottom of them too.

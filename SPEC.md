@@ -42,7 +42,7 @@ The diagnostic was cut on 16 September. The **route** survives; the **test** doe
 subject tabs (Ngữ pháp, Phát âm, Từ vựng, IELTS) and a menu button that drops the same four
 subjects down under the bar. The site opens on a home page: a landing screen, then a sentence
 whose ending turns fifteen loose words into a tree of ngữ pháp, phát âm and từ vựng, a
-"Học ngữ pháp ngay" button and a footer. The footer, under every screen, links to the four subjects and to the first material of every stage, says the site stores and collects nothing about the learner, and shows no build date. Ngữ pháp leads to the stage list, with every stage open. Phát âm, Từ vựng and IELTS each open
+"Học ngữ pháp ngay" button and a footer, the last thing on the home page. No other screen has a footer. It links to the four subjects and to every material, grouped by stage as in the stage list, says the site stores and collects nothing about the learner, and shows no build date. Ngữ pháp leads to the stage list, with every stage open. Phát âm, Từ vựng and IELTS each open
 one shared page that says the subject is not in this version and links back to Ngữ pháp. That
 page is the only trace of those subjects: no content, no sign up, no countdown.
 

@@ -2059,9 +2059,10 @@ button.option:hover {
 }
 
 /* ---------- Footer ----------
-   Full-width Mocha đậm band, the last thing on every screen. The layout follows the footer's own
-   width: three columns from 900px, one column under that. Contrast on #2e251e: links #f8f6ef
-   13.9:1, champagne #eadcc8 11.1:1, grey #a49a8e 5.4:1, gold focus ring 7.3:1. */
+   Home page only: a full-width Mocha đậm band under "Học ngữ pháp ngay", the last thing on the
+   page. The layout follows the footer's own width: three columns from 900px, one column under
+   that. Contrast on #2e251e: links #f8f6ef 13.9:1, material titles #eadcc8 11.1:1, grey #a49a8e
+   5.4:1, gold focus ring 7.3:1. */
 
 .site-footer {
   container-type: inline-size;
@@ -2099,11 +2100,19 @@ button.option:hover {
   opacity: 0.85;
 }
 
-.footer-grid {
-  margin-top: 44px;
+.footer-grid,
+.footer-nav {
   display: flex;
   flex-direction: column;
   gap: 44px;
+}
+
+.footer-grid {
+  margin-top: 44px;
+}
+
+.footer-group {
+  min-width: 0;
 }
 
 .footer-heading {
@@ -2130,12 +2139,30 @@ button.option:hover {
 
 .footer-list li {
   display: block;
+  max-width: 100%;
 }
 
-.footer-stages {
+.footer-stages,
+.footer-stage-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+}
+
+.footer-stage-column {
+  min-width: 0;
+}
+
+.footer-stage-title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--ivory);
+}
+
+.footer-material-list {
+  gap: 0;
 }
 
 .footer-link {
@@ -2143,6 +2170,7 @@ button.option:hover {
   align-items: center;
   flex-wrap: wrap;
   gap: 4px 12px;
+  max-width: 100%;
   min-height: 44px;
   padding: 0;
   border: none;
@@ -2154,6 +2182,7 @@ button.option:hover {
   font-weight: 600;
   text-align: left;
   text-decoration: none;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
@@ -2173,12 +2202,9 @@ button.option:hover {
   transform: translateY(1px);
 }
 
-.footer-link[aria-current='page'] .footer-subject {
-  font-weight: 800;
-  text-decoration: underline;
-  text-decoration-color: var(--gold);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+.footer-material {
+  font-weight: 400;
+  color: var(--sand);
 }
 
 .footer-lock {
@@ -2189,13 +2215,9 @@ button.option:hover {
   color: var(--locked-mid);
 }
 
-.footer-stage,
-.footer-top {
-  font-weight: 700;
-}
-
 .footer-top {
   gap: 8px;
+  font-weight: 700;
 }
 
 .footer-about {
@@ -2229,9 +2251,17 @@ button.option:hover {
     padding: 48px 32px;
   }
 
+  /* 220px | 1fr | 280px with 48px gaps: the nav holds the first two columns. */
   .footer-grid {
     display: grid;
-    grid-template-columns: 220px minmax(0, 1fr) 280px;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    align-items: start;
+    gap: 48px;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
     align-items: start;
     gap: 48px;
   }

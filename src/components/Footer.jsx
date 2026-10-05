@@ -11,28 +11,24 @@ function prefersReducedMotion() {
   }
 }
 
+// Smooth scroll to the top; with reduced motion it jumps.
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
 }
 
 // One plain text link in the footer: at least 44px tall, underline on hover, gold ring on focus.
-function FooterLink({ className = '', current, onClick, children }) {
+function FooterLink({ className = '', onClick, children }) {
   return (
-    <button
-      type="button"
-      className={`footer-link ${className}`.trim()}
-      aria-current={current ? 'page' : undefined}
-      onClick={onClick}
-    >
+    <button type="button" className={`footer-link ${className}`.trim()} onClick={onClick}>
       {children}
     </button>
   )
 }
 
 // A heading with a thin rule under it, then its content.
-function FooterGroup({ as: Tag = 'nav', label, children }) {
+function FooterGroup({ as: Tag = 'div', label, children }) {
   return (
-    <Tag className="footer-group" aria-label={label}>
+    <Tag className="footer-group" aria-label={Tag === 'section' ? label : undefined}>
       <h2 className="footer-heading">{label}</h2>
       {children}
     </Tag>
@@ -65,32 +61,29 @@ function FooterBottomBar() {
   )
 }
 
-// The one footer, rendered by the app shell as the last thing under every screen. A full-width
-// Mocha đậm band: the logo lockup, then three groups (Học, Ngữ pháp, Về trang) side by side when
-// the footer is at least 900px wide and stacked under that, then the bottom bar.
-// `active` is the subject key of the current screen, as in the top bar. Each "Giai đoạn N" opens
-// the first material of that stage; the number of stages comes from the content.
-export default function Footer({ active, materials, onHome, onSubject, onOpenMaterial }) {
+// The home page footer, the last thing under "Học ngữ pháp ngay". No other screen has a footer.
+// A full-width Mocha đậm band: the logo lockup, then the link groups Học and Ngữ pháp (inside one
+// nav) and Về trang, side by side when the footer is at least 900px wide and stacked under that,
+// then the bottom bar. The Ngữ pháp group mirrors the stage list: each stage's number, then each
+// of its materials as a link that opens that material.
+export default function Footer({ materials, onSubject, onOpenMaterial }) {
   const stages = []
   for (let stage = 1; stage <= STAGE_COUNT; stage++) {
-    const first = materials
-      .filter((m) => m.stage === stage)
-      .sort((a, b) => a.material_id - b.material_id)[0]
-    if (first) stages.push({ stage, first })
+    stages.push({
+      stage,
+      materials: materials
+        .filter((m) => m.stage === stage)
+        .sort((a, b) => a.material_id - b.material_id),
+    })
   }
   // Two sub-columns on a wide footer, the first one taking the odd stage out (6 and 5 for 11).
   const half = Math.ceil(stages.length / 2)
   const stageColumns = [stages.slice(0, half), stages.slice(half)]
 
-  function goHome() {
-    onHome()
-    scrollToTop()
-  }
-
   return (
     <footer className="site-footer">
       <div className="footer-inner">
-        <button type="button" className="footer-home" aria-label="Trika English, trang chủ" onClick={goHome}>
+        <button type="button" className="footer-home" aria-label="Trika English, trang chủ" onClick={scrollToTop}>
           <LogoMark size={40} reversed />
           <span className="top-bar-wordmark">
             <span className="top-bar-trika">Trika</span>
@@ -99,39 +92,48 @@ export default function Footer({ active, materials, onHome, onSubject, onOpenMat
         </button>
 
         <div className="footer-grid">
-          <FooterGroup label="Học">
-            <ul className="footer-list">
-              {SUBJECTS.map((s) => (
-                <li key={s.key}>
-                  <FooterLink current={active === s.key} onClick={() => onSubject(s.key)}>
-                    <span className="footer-subject">{s.label}</span>
-                    {s.locked && (
-                      <span className="footer-lock">
-                        <LockOutline size={16} />
-                        Chưa có
-                      </span>
-                    )}
-                  </FooterLink>
-                </li>
-              ))}
-            </ul>
-          </FooterGroup>
+          <nav className="footer-nav" aria-label="Chân trang">
+            <FooterGroup label="Học">
+              <ul className="footer-list">
+                {SUBJECTS.map((s) => (
+                  <li key={s.key}>
+                    <FooterLink onClick={() => onSubject(s.key)}>
+                      <span>{s.label}</span>
+                      {s.locked && (
+                        <span className="footer-lock">
+                          <LockOutline size={16} />
+                          Chưa có
+                        </span>
+                      )}
+                    </FooterLink>
+                  </li>
+                ))}
+              </ul>
+            </FooterGroup>
 
-          <FooterGroup label="Ngữ pháp">
-            <div className="footer-stages">
-              {stageColumns.map((column, i) => (
-                <ul key={i} className="footer-list">
-                  {column.map(({ stage, first }) => (
-                    <li key={stage}>
-                      <FooterLink className="footer-stage" onClick={() => onOpenMaterial(first)}>
-                        Giai đoạn {stage}
-                      </FooterLink>
-                    </li>
-                  ))}
-                </ul>
-              ))}
-            </div>
-          </FooterGroup>
+            <FooterGroup label="Ngữ pháp">
+              <div className="footer-stages">
+                {stageColumns.map((column, i) => (
+                  <div key={i} className="footer-stage-column">
+                    {column.map(({ stage, materials: stageMaterials }) => (
+                      <div key={stage} className="footer-stage">
+                        <h3 className="footer-stage-title">Giai đoạn {stage}</h3>
+                        <ul className="footer-list footer-material-list">
+                          {stageMaterials.map((m) => (
+                            <li key={m.material_id}>
+                              <FooterLink className="footer-material" onClick={() => onOpenMaterial(m)}>
+                                {m.title_vi}
+                              </FooterLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </FooterGroup>
+          </nav>
 
           <FooterGroup as="section" label="Về trang">
             <p className="footer-about">Trang không lưu và không thu thập thông tin của người học.</p>
